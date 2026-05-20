@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -128,7 +128,9 @@
             transition: width 0.5s ease-in-out; 
         }
 
-        /* Menu admin lateral */
+        /* --------------------------------------------------- */
+        /* ROLAGEM SUAVE MENU ADMIN MOBILE                     */
+        /* --------------------------------------------------- */
         .menu-admin-scroll {
             display: flex;
             overflow-x: auto;
@@ -138,7 +140,9 @@
             padding-bottom: 5px;
         }
 
-        /* Modo Escuro */
+        /* --------------------------------------------------- */
+        /* MODO ESCURO (DARK MODE)                             */
+        /* --------------------------------------------------- */
         body.dark-mode {
             background-color: #121212 !important;
             color: #e0e0e0 !important;
@@ -251,10 +255,10 @@
 
     <script type="module">
         // ===================================================
-        // 🚀 FIREBASE AVANÇADO - REALTIME INTEGRAÇÃO COMPLETA
+        // 🚀 FIREBASE - BANCO DE DADOS EM NUVEM (INSERIDO AQUI)
         // ===================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, where, deleteDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA2KZVjgT1zaDXf_iCx8j6Ih0oHCqIYHp0",
@@ -270,12 +274,7 @@
         const db = getFirestore(app);
         window.db = db;
 
-        // Ativar Persistência Offline para o banco continuar funcionando sem internet
-        enableIndexedDbPersistence(db).catch((err) => {
-            console.warn("Aviso Persistência Offline:", err.code);
-        });
-
-        // Salva estados globais do sistema
+        // Função mágica: Salva no celular e na Nuvem ao mesmo tempo
         window.salvarBD = async (chave, dados) => {
             localStorage.setItem(chave, JSON.stringify(dados));
             try {
@@ -285,84 +284,24 @@
             }
         };
 
-        // Ouvinte em Tempo Real inteligente para evitar concorrência e atualizar telas dinamicamente
-        let isFirstSnapshot = true;
+        // Função que baixa tudo da Nuvem quando alguém abre o site
         window.sincronizarFirebase = async () => {
-            const chavesGlobais = ['lb_historico', 'lb_financas', 'lb_config', 'lb_produtos', 'lb_extras'];
-            for (let chave of chavesGlobais) {
+            const chaves = ['lb_pedidos', 'lb_historico', 'lb_financas', 'lb_config', 'lb_produtos', 'lb_extras'];
+            for (let chave of chaves) {
                 try {
                     const snap = await getDoc(doc(db, "lb_dados", chave));
                     if (snap.exists()) {
                         localStorage.setItem(chave, JSON.stringify(snap.data().valor));
                     }
                 } catch(e) {
-                    console.error("Erro sincronizando global", chave, e);
+                    console.error("Erro sincronizando", chave, e);
                 }
             }
-            carregarDados();
-
-            if (appState.user) {
-                // Sincronização e backup de Perfil de Usuário
-                if (appState.user.tipo === 'cliente' && appState.user.email) {
-                    try {
-                        const profileSnap = await getDoc(doc(db, "usuarios", appState.user.email));
-                        if (profileSnap.exists()) {
-                            appState.user = { ...appState.user, ...profileSnap.data() };
-                            localStorage.setItem('lb_user', JSON.stringify(appState.user));
-                        }
-                    } catch(err) { console.error("Erro perfil", err); }
-                }
-
-                // Radar em Tempo Real de Pedidos separados (Evita bug de exclusão mútua)
-                let qPedidos = appState.user.tipo === 'admin' 
-                    ? query(collection(db, "pedidos")) 
-                    : query(collection(db, "pedidos"), where("email", "==", appState.user.email));
-
-                onSnapshot(qPedidos, (snapshot) => {
-                    let lista = [];
-                    
-                    snapshot.forEach((docSnap) => { 
-                        const data = docSnap.data();
-                        lista.push(data); 
-
-                        // SISTEMA DE NOTIFICAÇÃO DO ADMIN PARA NOVOS PEDIDOS
-                        if (appState.user.tipo === 'admin' && !isFirstSnapshot && !appState.pedidos.find(p => p.id === data.id)) {
-                            appState.adminNotifs.unshift({
-                                id: data.id,
-                                cliente: data.cliente,
-                                msg: `Fez um pedido de R$ ${data.total.toFixed(2)}`,
-                                hora: new Date().toLocaleTimeString().slice(0,5)
-                            });
-                            localStorage.setItem('lb_admin_notifs', JSON.stringify(appState.adminNotifs));
-                            window.dispararNotificacao("Novo Pedido! 🔔", `${data.cliente} acabou de pedir!`);
-                            window.atualizarBadgeNotifs();
-                            window.renderAdminNotifs();
-                        }
-                    });
-                    
-                    lista.sort((a, b) => b.id - a.id); // Sempre os novos no topo
-                    appState.pedidos = lista;
-                    localStorage.setItem('lb_pedidos', JSON.stringify(lista));
-
-                    // Atualiza dinamicamente as telas se estiverem abertas
-                    const contentDiv = document.getElementById('lista-pedidos-cliente');
-                    if(contentDiv) renderPedidosCliente();
-                    
-                    const agendaDiv = document.getElementById('lista-agenda-render');
-                    if(agendaDiv) {
-                        const currentTab = document.getElementById('btn-tab-agenda');
-                        if(currentTab && currentTab.classList.contains('bg-[var(--lb-pink-dark)]')) {
-                            renderAdmTabs('agenda');
-                        }
-                    }
-
-                    isFirstSnapshot = false;
-                });
-            }
+            carregarDados(); // Carrega o app com os dados fresquinhos
         };
 
         // ===================================================
-        // LÓGICA DO MODO ESCURO E NOTIFICAÇÕES GERAIS
+        // LÓGICA DO MODO ESCURO E NOTIFICAÇÕES
         // ===================================================
         
         window.toggleDarkMode = () => {
@@ -419,6 +358,13 @@
             }
         };
 
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('lb_dark_mode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+            pedirPermissaoNotificacao();
+        });
+
         // ===================================================
         // ALERTAS GLOBAIS
         // ===================================================
@@ -469,13 +415,12 @@
         };
 
         // ===================================================
-        // BANCO DE DADOS LOCAL
+        // BANCO DE DADOS (MEMÓRIA ATUAL)
         // ===================================================
         function carregarDados() {
             window.appState = {
                 user: JSON.parse(localStorage.getItem('lb_user')) || null, 
-                // CARRINHO SEGURO (Salvo contra F5)
-                cart: JSON.parse(localStorage.getItem('lb_cart')) || [], 
+                cart: window.appState ? window.appState.cart : [], 
                 pedidos: JSON.parse(localStorage.getItem('lb_pedidos')) || [],
                 historicoCaixa: JSON.parse(localStorage.getItem('lb_historico')) || [], 
                 financas: JSON.parse(localStorage.getItem('lb_financas')) || { 
@@ -512,9 +457,7 @@
                     { id: 'e1', nome: 'Nutella Extra', preco: 3.00 },
                     { id: 'e2', nome: 'Embalagem p/ Presente', preco: 5.00 }
                 ],
-                adminNotifs: JSON.parse(localStorage.getItem('lb_admin_notifs')) || [],
                 produtoEditandoId: null, 
-                // OPÇÃO 3 MANTIDA: Senha do admin exposta para testes
                 adminEmail: "admin@lb.com",
                 adminPass: "lb2024",
                 produtoAtivoParaModal: null,
@@ -696,26 +639,10 @@
             `,
 
             adm: () => `
-                <div class="p-6 pb-24 pt-4 bg-gray-50 min-h-screen relative">
-                    <div class="flex justify-between items-center mb-6 relative">
+                <div class="p-6 pb-24 pt-4 bg-gray-50 min-h-screen">
+                    <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl font-black font-title text-[var(--lb-pink-dark)]">Gestão Online</h2>
-                        
-                        <div class="flex items-center gap-4">
-                            <div class="relative cursor-pointer hover:scale-105 transition-transform" onclick="toggleAdminNotifs()">
-                                <i data-lucide="bell" class="w-6 h-6 text-gray-500 hover:text-[var(--lb-pink-dark)] transition-colors"></i>
-                                <span id="admin-notif-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ${appState.adminNotifs.length > 0 ? '' : 'hidden'}">${appState.adminNotifs.length}</span>
-                            </div>
-                            <button onclick="logout()" class="text-[10px] font-bold bg-white shadow-sm px-3 py-2 rounded-xl text-gray-600 border">Sair</button>
-                        </div>
-
-                        <div id="admin-notif-dropdown" class="hidden absolute top-10 right-0 w-72 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 z-50 flex flex-col modal-pop overflow-hidden">
-                            <div class="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                                <h3 class="font-bold text-sm text-[var(--lb-brown)]">Notificações</h3>
-                                <button onclick="limparNotifs()" class="text-[10px] text-gray-500 hover:text-red-500 font-bold underline">Limpar tudo</button>
-                            </div>
-                            <div id="admin-notif-list" class="max-h-64 overflow-y-auto p-2 space-y-1 bg-white">
-                                </div>
-                        </div>
+                        <button onclick="logout()" class="text-[10px] font-bold bg-white shadow-sm px-3 py-2 rounded-xl text-gray-600 border">Sair</button>
                     </div>
 
                     <div class="menu-admin-scroll bg-white p-2 rounded-[20px] shadow-sm border card-shadow mb-6">
@@ -733,7 +660,7 @@
             `
         };
 
-        window.renderBottomNav = () => {
+        function renderBottomNav() {
             const nav = document.getElementById('bottom-nav');
             const isAdmin = appState.user && appState.user.tipo === 'admin';
             nav.innerHTML = `
@@ -743,7 +670,7 @@
                 <button onclick="abrirPerfil()" id="tab-perfil" class="nav-item flex flex-col items-center gap-1 text-gray-400 p-2"><i data-lucide="user" class="w-6 h-6"></i></button>
             `;
             lucide.createIcons();
-        };
+        }
 
         window.changeTab = (tab) => {
             carregarDados();
@@ -758,10 +685,7 @@
             window.scrollTo(0,0);
             
             if(tab === 'carrinho') atualizarTelaCarrinho();
-            if(tab === 'adm') {
-                renderAdmTabs('painel'); 
-                window.renderAdminNotifs();
-            }
+            if(tab === 'adm') renderAdmTabs('painel'); 
             if(tab === 'perfilCliente') {
                 renderPedidosCliente();
                 setTimeout(() => {
@@ -781,7 +705,7 @@
             }
         };
 
-        window.fazerLogin = async () => {
+        window.fazerLogin = () => {
             const e = document.getElementById('login-email').value;
             const s = document.getElementById('login-senha').value;
             
@@ -796,39 +720,23 @@
             }
             
             localStorage.setItem('lb_user', JSON.stringify(appState.user));
-            window.renderBottomNav();
-            
-            // Ativa o radar em tempo real imediatamente após o login
-            await window.sincronizarFirebase();
-            
+            renderBottomNav();
             changeTab(appState.user.tipo === 'admin' ? 'adm' : 'home');
         };
 
         window.logout = () => { 
             appState.user = null; 
             localStorage.removeItem('lb_user'); 
-            window.renderBottomNav(); 
+            renderBottomNav(); 
             changeTab('home'); 
         };
 
-        window.salvarPerfil = async () => {
+        window.salvarPerfil = () => {
             appState.user.nome = document.getElementById('perfil-nome').value;
             appState.user.telefone = document.getElementById('perfil-telefone').value;
             appState.user.bairro = document.getElementById('perfil-bairro').value;
             appState.user.numero = document.getElementById('perfil-numero').value;
             localStorage.setItem('lb_user', JSON.stringify(appState.user));
-            
-            // Backup automático do perfil na nuvem Firestore
-            if (appState.user.email) {
-                try {
-                    await setDoc(doc(db, "usuarios", appState.user.email), {
-                        nome: appState.user.nome,
-                        telefone: appState.user.telefone,
-                        bairro: appState.user.bairro,
-                        numero: appState.user.numero
-                    });
-                } catch(e) { console.error("Erro nuvem perfil", e); }
-            }
             showCustomAlert("Sucesso!", "Dados atualizados.", "success");
         };
 
@@ -904,7 +812,6 @@
             }
 
             appState.cart.push(prodClone);
-            localStorage.setItem('lb_cart', JSON.stringify(appState.cart)); // CARRINHO SALVO
             document.getElementById('cart-count').innerText = appState.cart.length;
             fecharModalExtras();
             
@@ -914,7 +821,6 @@
 
         window.removerDoCarrinho = (index) => { 
             appState.cart.splice(index, 1); 
-            localStorage.setItem('lb_cart', JSON.stringify(appState.cart)); // CARRINHO SALVO
             document.getElementById('cart-count').innerText = appState.cart.length; 
             atualizarTelaCarrinho(); 
         };
@@ -962,7 +868,7 @@
             lucide.createIcons();
         }
 
-        window.finalizarPedido = async () => {
+        window.finalizarPedido = () => {
             const bairro = document.getElementById('cli-bairro').value;
             const numero = document.getElementById('cli-numero').value;
             const hora = document.getElementById('cli-hora').value;
@@ -976,9 +882,8 @@
             const displayAddress = `${bairro}, Nº ${numero}, Regente Feijó`;
             const total = appState.cart.reduce((s, i) => s + i.preco, 0);
 
-            // Cria identificador robusto contra conflitos
             const ped = { 
-                id: Date.now().toString().slice(-4) + Math.floor(Math.random() * 10), 
+                id: Date.now().toString().slice(-4), 
                 email: appState.user.email, 
                 cliente: appState.user.nome, 
                 telefone: appState.user.telefone, 
@@ -993,17 +898,14 @@
                 data: new Date().toLocaleDateString()
             };
             
-            // 🔥 Salvamento garantido na Nuvem
-            try {
-                await setDoc(doc(db, "pedidos", ped.id), ped);
-            } catch(e) { console.error("Erro firestore individual", e); }
+            appState.pedidos.unshift(ped); 
+            window.salvarBD('lb_pedidos', appState.pedidos);
             
             let textZap = `*NOVO PEDIDO #${ped.id} | LB COOKIES*%0A%0A*Cliente:* ${ped.cliente}%0A*WhatsApp:* ${ped.telefone || 'Não cadastrado'}%0A*Endereço:* ${displayAddress}%0A*Horário:* ${hora}%0A*Pag:* ${pagamento === 'pix' ? 'PIX' : 'Na Entrega'}${marcadoPago ? ' (JÁ PAGO)' : ' (A PAGAR)'}%0A%0A*Pedido:*%0A${appState.cart.map(i => `- ${i.nome}`).join('%0A')}%0A%0A*Total:* R$ ${total.toFixed(2).replace('.',',')}`;
             
             window.open(`https://wa.me/5518996717062?text=${textZap}`, '_blank');
             
             appState.cart = []; 
-            localStorage.setItem('lb_cart', JSON.stringify([])); // LIMPEZA CARRINHO SEGURO
             document.getElementById('cart-count').innerText = 0; 
             changeTab('perfilCliente');
         };
@@ -1012,7 +914,6 @@
             const ped = appState.pedidos.find(p => p.id === pedidoId);
             if(ped && ped.itensArray) { 
                 appState.cart = [...appState.cart, ...ped.itensArray]; 
-                localStorage.setItem('lb_cart', JSON.stringify(appState.cart));
                 document.getElementById('cart-count').innerText = appState.cart.length; 
                 changeTab('carrinho'); 
             }
@@ -1048,60 +949,6 @@
             
             lucide.createIcons();
         }
-
-        // ==========================================
-        // LÓGICA DE NOTIFICAÇÕES DO PAINEL ADMIN
-        // ==========================================
-        window.toggleAdminNotifs = () => {
-            const dropdown = document.getElementById('admin-notif-dropdown');
-            if(dropdown) {
-                dropdown.classList.toggle('hidden');
-                window.renderAdminNotifs();
-            }
-        };
-
-        window.renderAdminNotifs = () => {
-            const listContainer = document.getElementById('admin-notif-list');
-            if(!listContainer) return;
-            
-            if(appState.adminNotifs.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-center text-gray-400 py-6 font-medium">Você não tem novas notificações.</p>`;
-                return;
-            }
-
-            listContainer.innerHTML = appState.adminNotifs.map(n => `
-                <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors border border-transparent hover:border-gray-100 cursor-default">
-                    <div class="w-10 h-10 rounded-full bg-[var(--lb-pink-light)] text-[var(--lb-pink-dark)] flex items-center justify-center font-black text-sm shadow-sm flex-shrink-0">
-                        ${n.cliente.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-[13px] font-bold text-[var(--lb-brown)] leading-tight">${n.cliente}</p>
-                        <p class="text-[11px] text-gray-500 leading-tight mt-0.5">${n.msg}</p>
-                        <p class="text-[9px] text-gray-400 mt-1 font-bold"><i data-lucide="clock" class="w-3 h-3 inline align-middle"></i> ${n.hora}</p>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        };
-
-        window.atualizarBadgeNotifs = () => {
-            const badge = document.getElementById('admin-notif-badge');
-            if(badge) {
-                if(appState.adminNotifs.length > 0) {
-                    badge.innerText = appState.adminNotifs.length;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
-            }
-        };
-
-        window.limparNotifs = () => {
-            appState.adminNotifs = [];
-            localStorage.setItem('lb_admin_notifs', JSON.stringify([]));
-            window.renderAdminNotifs();
-            window.atualizarBadgeNotifs();
-        };
 
         // ==========================================
         // GESTÃO ONLINE - O SUPER PAINEL ADMINISTRATIVO
@@ -1541,16 +1388,12 @@
             html2pdf().set(opcoes).from(elemento).save();
         };
 
-        // LÓGICA ADMINISTRATIVA EM TEMPO REAL
-        window.mudarStatusAdm = async (i, s) => { 
-            const pedidoModificado = appState.pedidos[i];
-            pedidoModificado.status = s;
+        // LÓGICA ADMINISTRATIVA
+        window.mudarStatusAdm = (i, s) => { 
+            appState.pedidos[i].status = s; 
+            window.salvarBD('lb_pedidos', appState.pedidos); 
             
-            try {
-                await setDoc(doc(db, "pedidos", pedidoModificado.id), pedidoModificado);
-            } catch(e) { console.error("Erro status nuvem", e); }
-            
-            const clienteNome = pedidoModificado.cliente;
+            const clienteNome = appState.pedidos[i].cliente;
             window.dispararNotificacao("Atualização do Pedido! 🍪", `Olá ${clienteNome}, seu pedido mudou para: ${s}`);
 
             showCustomAlert("Atualizado", "Status do cliente alterado para: " + s, "success"); 
@@ -1650,7 +1493,7 @@
         };
         
         window.fecharCaixaAdm = () => {
-            showCustomConfirm("Encerrar o Expediente?", "Isso mandará todas as vendas de hoje para o histórico e limpará a aba de pedidos.", async () => {
+            showCustomConfirm("Encerrar o Expediente?", "Isso mandará todas as vendas de hoje para o histórico e limpará a aba de pedidos.", () => {
                 const totalHoje = appState.pedidos.reduce((s,p)=>s+p.total, 0);
                 if(appState.pedidos.length > 0) { 
                     appState.historicoCaixa.push({ 
@@ -1659,39 +1502,32 @@
                         qtd: appState.pedidos.length, 
                         pedidosAnexados: [...appState.pedidos] 
                     }); 
-                    await window.salvarBD('lb_historico', appState.historicoCaixa); 
-
-                    // Limpa cada documento ativo de pedido arquivado da nuvem
-                    for (let p of appState.pedidos) {
-                        try {
-                            await deleteDoc(doc(db, "pedidos", p.id));
-                        } catch(err) { console.error("Erro deletar ao fechar", err); }
-                    }
+                    window.salvarBD('lb_historico', appState.historicoCaixa); 
                 }
-                
                 appState.pedidos = []; 
-                localStorage.setItem('lb_pedidos', JSON.stringify([])); 
-                
-                // Limpeza automática do histórico do Sininho
-                window.limparNotifs();
-
+                window.salvarBD('lb_pedidos', []); 
                 showCustomAlert("Dia Encerrado", "Caixa fechado com sucesso.", "success"); 
                 renderAdmTabs('painel');
             });
         };
 
-        // INICIALIZAÇÃO INSTANTÂNEA
+        // INICIALIZAÇÃO COM FIREBASE
         window.onload = async () => { 
-            carregarDados();
-            window.renderBottomNav(); 
+            document.getElementById('app-content').innerHTML = `
+                <div class="flex flex-col justify-center items-center h-[70vh]">
+                    <i data-lucide="cloud-download" class="w-12 h-12 text-[var(--lb-pink-dark)] animate-bounce mb-4"></i>
+                    <p class="font-bold text-[var(--lb-brown)] text-sm animate-pulse">Sincronizando Banco de Dados...</p>
+                </div>
+            `;
+            lucide.createIcons();
+            
+            await window.sincronizarFirebase();
+            
+            renderBottomNav(); 
             changeTab('home'); 
             document.getElementById('cart-count').innerText = appState.cart.length; 
-            
-            // Inicia os processos na nuvem silenciosamente
-            await window.sincronizarFirebase();
         };
     </script>
 </body>
 </html>
-
 
