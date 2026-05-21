@@ -1831,7 +1831,10 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-        
+  // 4. Anti-Inspecionar Avançado (Trava o console se ele for aberto)
+setInterval(function() {
+    debugger;
+}, 100);      
 
 // ===================================================
 // INICIALIZAÇÃO
