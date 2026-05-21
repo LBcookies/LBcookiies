@@ -1810,6 +1810,29 @@ window.fecharCaixaAdm = () => {
     });
 };
 
+// 1. Bloquear o clique direito do mouse (Menu de Contexto)
+document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
+
+// 2. Bloquear atalhos do teclado que abrem o Inspecionar
+document.addEventListener('keydown', (event) => {
+    // Bloqueia o F12
+    if (event.key === 'F12') {
+        event.preventDefault();
+    }
+    
+    // Bloqueia Ctrl + Shift + I (Inspecionar)
+    // Bloqueia Ctrl + Shift + J (Console)
+    // Bloqueia Ctrl + U (Ver Código Fonte)
+    // Bloqueia Ctrl + S (Salvar Página)
+    if (event.ctrlKey && (event.shiftKey && (event.key === 'I' || event.key === 'J') || event.key === 'u' || event.key === 'U' || event.key === 's' || event.key === 'S')) {
+        event.preventDefault();
+    }
+});
+
+        
+
 // ===================================================
 // INICIALIZAÇÃO
 // ===================================================
