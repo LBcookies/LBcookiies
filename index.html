@@ -24,7 +24,6 @@
     --active-color: #60a5fa;
     --active-dark: #2563eb;
     --active-bg: #eff6ff;
-    /* dark mode vars */
     --body-bg: #fdf8f0;
     --text-main: #111827;
     --text-sub: #6b7280;
@@ -38,7 +37,6 @@
     --tag-color: #374151;
   }
 
-  /* ====== DARK MODE ====== */
   body.dark {
     --body-bg: #1c1917;
     --card-bg: #262626;
@@ -64,26 +62,41 @@
     touch-action: manipulation;
     transition: background 0.3s, color 0.3s;
   }
+
   .card {
     background: var(--card-bg);
     border-radius: var(--card-radius);
     box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s, all 0.5s ease-in-out;
   }
   body.dark .card { box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
   .card:active { transform: scale(0.99); }
+
+  .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bento-grid > * { transition: all 0.5s ease-in-out; }
+  .col-span-2 { grid-column: span 2; }
+
   .btn-tac { transition: all 0.2s; }
   .btn-tac:active { transform: scale(0.95); }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-  .theme-bia { --active-color: #60a5fa; --active-dark: #2563eb; --active-bg: #eff6ff; }
-  .theme-laura { --active-color: #f472b6; --active-dark: #db2777; --active-bg: #fdf2f8; }
+  .ripple-btn { position: relative; overflow: hidden; }
+  .ripple-btn .ripple-wave {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transform: scale(0); animation: rippleAnim 0.55s linear;
+    pointer-events: none;
+  }
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  .tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
 
   @keyframes countUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   .counter-anim { animation: countUp 0.4s ease forwards; }
 
-  /* Skeleton */
   @keyframes shimmer {
     0% { background-position: -400px 0; }
     100% { background-position: 400px 0; }
@@ -94,16 +107,9 @@
     background-size: 400px 100%;
     animation: shimmer 1.4s ease-in-out infinite;
   }
-  body.dark .skeleton {
-    background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
-    background-size: 400px 100%;
-  }
+  body.dark .skeleton { background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%); background-size: 400px 100%; }
   .skeleton-line { height: 14px; margin-bottom: 8px; }
-  .skeleton-title { height: 24px; width: 60%; margin-bottom: 12px; }
-  .skeleton-value { height: 32px; width: 80%; margin-bottom: 6px; }
-  .skeleton-card { padding: 16px; }
 
-  /* Toast */
   .toast-container {
     position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
     z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none;
@@ -111,8 +117,7 @@
   }
   .toast {
     background: var(--card-bg);
-    border-radius: 20px;
-    padding: 12px 16px;
+    border-radius: 20px; padding: 12px 16px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.15);
     display: flex; align-items: center; gap: 10px;
     border-left: 4px solid var(--active-color);
@@ -124,7 +129,6 @@
   @keyframes slideUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
   .toast.hide { animation: slideUp 0.3s ease forwards; }
 
-  /* Confetti */
   .confetti-piece {
     position: fixed; width: 8px; height: 8px; border-radius: 2px;
     animation: confettiFall 1.5s ease-in forwards;
@@ -135,16 +139,32 @@
     100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
   }
 
+  @keyframes glowGreen {
+    0% { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+    40% { box-shadow: 0 0 0 6px rgba(16,185,129,0.25), 0 2px 24px rgba(16,185,129,0.18); }
+    100% { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+  }
+  .glow-green { animation: glowGreen 1s ease forwards; }
+
   @keyframes flashGreen { 0%,100% { background-color: var(--card-bg); } 50% { background-color: #d1fae5; } }
   .flash-green { animation: flashGreen 0.6s ease; }
 
   @keyframes goldPulse { 0%,100% { box-shadow: 0 0 0 2px #f59e0b44; } 50% { box-shadow: 0 0 0 6px #f59e0b88; } }
   .gold-pulse { animation: goldPulse 2s infinite; border: 2px solid #f59e0b; }
 
-  .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .col-span-2 { grid-column: span 2; }
+  @keyframes neonPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(37,99,235,0); }
+  }
+  .cal-day.today { animation: neonPulse 2s infinite; }
 
-  /* Toggle switch */
+  @keyframes saleFlash {
+    0% { background: var(--input-bg); }
+    30% { background: #d1fae5; }
+    100% { background: var(--input-bg); }
+  }
+  .sale-flash { animation: saleFlash 0.8s ease forwards; }
+
   .toggle-wrap { position: relative; display: inline-flex; align-items: center; }
   .toggle-wrap input { position: absolute; opacity: 0; width: 0; height: 0; }
   .toggle-track { width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; position: relative; cursor: pointer; transition: background 0.2s; }
@@ -153,8 +173,7 @@
   input:checked + .toggle-track::after { transform: translateX(20px); }
 
   .receipt-area {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px; line-height: 1.5;
+    font-family: 'Space Mono', monospace; font-size: 11px; line-height: 1.5;
     background: var(--input-bg); border: 1px dashed #d1d5db;
     border-radius: 12px; padding: 12px;
     color: var(--text-main); white-space: pre; overflow-x: auto;
@@ -166,10 +185,6 @@
     z-index: 10000; transition: opacity 0.5s;
   }
 
-  @keyframes growBar { from { width: 0; } to { width: var(--target-width); } }
-  .bar-grow { animation: growBar 1s ease-out forwards; }
-
-  /* Post-it */
   .postit {
     border-radius: 4px 20px 20px 20px;
     box-shadow: 3px 3px 12px rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.06);
@@ -190,27 +205,60 @@
   .swal2-popup { border-radius: 24px !important; font-family: 'Nunito', sans-serif !important; }
   .swal2-confirm { border-radius: 999px !important; font-weight: 800 !important; }
 
-  /* Calendar */
   .cal-day {
     aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 10px; font-size: 12px; font-weight: 700;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 12px; font-size: 12px; font-weight: 700;
     cursor: pointer; transition: all 0.15s;
     position: relative; color: var(--text-main);
+    gap: 1px;
   }
   .cal-day:hover { background: var(--active-bg); }
   .cal-day.today { background: var(--active-dark); color: white !important; }
   .cal-day.selected { background: var(--active-bg); border: 2px solid var(--active-dark); color: var(--active-dark); }
-  .cal-day.has-sales::after {
-    content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  .cal-day .sales-dot {
     width: 5px; height: 5px; border-radius: 50%;
-    background: var(--active-dark);
+    background: #f59e0b;
+    flex-shrink: 0;
   }
-  .cal-day.today.has-sales::after { background: white; }
+  .cal-day.today .sales-dot { background: rgba(255,255,255,0.85); }
+  .cal-day.selected .sales-dot { background: var(--active-dark); }
+  .cal-arrow { font-size: 7px; line-height: 1; }
+  .cal-arrow.up { color: #10b981; }
+  .cal-arrow.down { color: #ef4444; }
+  .cal-day.today .cal-arrow.up { color: #a7f3d0; }
+  .cal-day.today .cal-arrow.down { color: #fca5a5; }
   .cal-day.empty { cursor: default; }
   .cal-header { font-size: 10px; font-weight: 800; color: var(--text-muted); text-align: center; text-transform: uppercase; padding: 4px 0; }
 
-  /* Dark mode button */
+  .filter-pill {
+    padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800;
+    border: none; cursor: pointer; transition: all 0.2s;
+    background: var(--tag-bg); color: var(--tag-color);
+    font-family: 'Nunito', sans-serif;
+  }
+  .filter-pill.active {
+    background: var(--active-dark); color: white;
+  }
+
+  .vendas-sticky-header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+  }
+  body.dark .vendas-sticky-header { background: rgba(38,38,38,0.9); }
+
+  .troco-field {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.4s ease;
+    opacity: 0;
+  }
+  .troco-field.open {
+    max-height: 240px; opacity: 1;
+  }
+
   #btn-dark-mode {
     width: 34px; height: 34px; border-radius: 50%;
     background: var(--input-bg); border: 1.5px solid var(--input-border);
@@ -220,18 +268,9 @@
   }
   #btn-dark-mode:hover { transform: scale(1.1); }
 
-  /* IA Drawer */
-  #ia-drawer {
-    max-height: 0; overflow: hidden;
-    transition: max-height 0.4s ease;
-  }
+  #ia-drawer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
   #ia-drawer.open { max-height: 2000px; }
 
-  /* Fade out animation */
-  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; height: 0; padding: 0; margin: 0; overflow: hidden; } }
-  .fade-out-anim { animation: fadeOut 0.6s ease forwards; }
-
-  /* inputs dark mode */
   body.dark input, body.dark select, body.dark textarea {
     background: var(--input-bg) !important;
     border-color: var(--input-border) !important;
@@ -239,20 +278,26 @@
   }
   body.dark input::placeholder, body.dark textarea::placeholder { color: var(--text-muted) !important; }
 
-  /* Receipt button pop */
   @keyframes popIn { 0%{transform:scale(0.7);opacity:0} 80%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
   .pop-in { animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1) forwards; }
+
+  .venda-item {
+    transition: all 0.4s ease-in-out;
+  }
+  .venda-item.paid-flash {
+    animation: saleFlash 0.8s ease forwards;
+  }
+
+  #retirada-beatriz { color: #1e40af; }
+  #troco-live { font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 
-<!-- Toast container -->
 <div class="toast-container" id="toast-container"></div>
-
-<!-- Confetti -->
 <div id="confetti-container" style="position:fixed;inset:0;pointer-events:none;z-index:9997;overflow:hidden;"></div>
 
-<!-- Splash Screen -->
+<!-- Splash -->
 <div id="splash">
   <div style="font-size:64px;animation:countUp 0.5s ease">🍪</div>
   <div style="font-size:28px;font-weight:900;color:#92400e;margin-top:12px;letter-spacing:-1px">LBCookies</div>
@@ -272,7 +317,7 @@
 <!-- Main app -->
 <div id="app" class="hidden" style="max-width:480px;margin:0 auto;padding:0 12px 100px 12px;min-height:100vh">
 
-  <!-- TOPO: Admin Selector -->
+  <!-- TOPO -->
   <div style="position:sticky;top:0;z-index:100;background:var(--sticky-bg);padding:10px 0 6px;margin-bottom:4px;transition:background 0.3s">
     <div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:8px">
@@ -281,14 +326,9 @@
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <div style="display:flex;gap:6px;background:var(--tag-bg);padding:4px;border-radius:14px">
-          <button id="btn-bia" onclick="switchAdmin('bia')" class="btn-tac" style="padding:6px 14px;border-radius:10px;font-size:12px;font-weight:800;transition:all 0.2s;border:none;cursor:pointer">
-            💙 Beatriz
-          </button>
-          <button id="btn-laura" onclick="switchAdmin('laura')" class="btn-tac" style="padding:6px 14px;border-radius:10px;font-size:12px;font-weight:800;transition:all 0.2s;border:none;cursor:pointer">
-            💗 Laura
-          </button>
+          <button id="btn-bia" onclick="switchAdmin('bia')" class="btn-tac" style="padding:6px 14px;border-radius:10px;font-size:12px;font-weight:800;transition:all 0.2s;border:none;cursor:pointer">💙 Beatriz</button>
+          <button id="btn-laura" onclick="switchAdmin('laura')" class="btn-tac" style="padding:6px 14px;border-radius:10px;font-size:12px;font-weight:800;transition:all 0.2s;border:none;cursor:pointer">💗 Laura</button>
         </div>
-        <!-- Dark Mode Toggle -->
         <button id="btn-dark-mode" onclick="toggleDarkMode()" title="Alternar tema">
           <i class="fa-solid fa-moon"></i>
         </button>
@@ -299,7 +339,7 @@
   <!-- PAGE: Painel -->
   <div id="page-painel" class="bento-grid">
 
-    <!-- Calendário (col-span-2) -->
+    <!-- ===== CALENDÁRIO PREMIUM (col-span-2) ===== -->
     <div class="card col-span-2" style="padding:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <h3 style="font-weight:800;font-size:14px;color:var(--text-main);display:flex;align-items:center;gap:6px">
@@ -313,15 +353,12 @@
       <div id="calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
     </div>
 
-    <!-- Card Formulário de Venda (col-span-2) -->
+    <!-- ===== CARD FORMULÁRIO DE VENDA (col-span-2) ===== -->
     <div class="card col-span-2" style="padding:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--divider)">
-        <h3 style="font-weight:800;font-size:14px;color:var(--text-main);display:flex;align-items:center;gap:6px">
-          ✍️ Nova Venda
-        </h3>
+        <h3 style="font-weight:800;font-size:14px;color:var(--text-main)">✍️ Nova Venda</h3>
         <span id="badge-data" style="font-size:11px;font-weight:800;padding:4px 10px;background:#fef3c7;color:#92400e;border-radius:8px">Hoje</span>
       </div>
-
       <div style="display:flex;flex-direction:column;gap:10px">
         <div>
           <label style="font-size:11px;font-weight:700;color:var(--text-sub);display:block;margin-bottom:4px">Nome do Cliente</label>
@@ -340,7 +377,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--input-bg);border-radius:14px">
           <div>
             <span style="font-size:11px;color:var(--text-muted);font-weight:600">Total</span>
-            <div id="form-total-preview" style="font-size:20px;font-weight:900;color:var(--text-main)">R$ 0,00</div>
+            <div id="form-total-preview" class="tabular" style="font-size:20px;font-weight:900;color:var(--text-main)">R$ 0,00</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <span style="font-size:11px;font-weight:700;color:var(--text-sub)">Pago?</span>
@@ -353,28 +390,29 @@
       </div>
     </div>
 
-    <!-- Faturamento Dia -->
+    <!-- ===== FATURAMENTO HOJE ===== -->
     <div class="card" id="card-fat-dia" style="padding:16px">
       <span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">💰 Faturamento<br>Hoje</span>
-      <div id="fat-dia" style="font-size:22px;font-weight:900;color:var(--text-main);margin-top:8px">R$ 0,00</div>
+      <div id="fat-dia" class="tabular" style="font-size:22px;font-weight:900;color:var(--text-main);margin-top:8px">R$ 0,00</div>
       <div id="fat-dia-sub" style="font-size:10px;color:var(--text-muted);font-weight:600;margin-top:2px">✨</div>
+      <div id="fat-dia-media" style="font-size:10px;color:var(--text-muted);font-weight:600;margin-top:4px;display:none;line-height:1.4"></div>
     </div>
 
-    <!-- Faturamento Mês -->
+    <!-- ===== FATURAMENTO MÊS ===== -->
     <div class="card" id="card-fat-mes" style="padding:16px">
       <span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">📅 Faturamento<br>Mês</span>
-      <div id="fat-mes" style="font-size:22px;font-weight:900;color:var(--text-main);margin-top:8px">R$ 0,00</div>
+      <div id="fat-mes" class="tabular" style="font-size:22px;font-weight:900;color:var(--text-main);margin-top:8px">R$ 0,00</div>
       <div id="fat-mes-sub" style="font-size:10px;color:var(--text-muted);font-weight:600;margin-top:2px">✨</div>
     </div>
 
-    <!-- Placar Disputa (col-span-2) -->
+    <!-- ===== PLACAR (col-span-2) ===== -->
     <div class="card col-span-2" style="padding:16px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:12px">🏆 Placar da Semana</h3>
       <div style="display:flex;flex-direction:column;gap:10px">
         <div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
             <span style="font-size:13px;font-weight:800;color:#2563eb">💙 Beatriz</span>
-            <span id="placar-bia-num" style="font-size:13px;font-weight:900;color:#2563eb">0 cookies</span>
+            <span id="placar-bia-num" class="tabular" style="font-size:13px;font-weight:900;color:#2563eb">0 cookies</span>
           </div>
           <div style="background:#eff6ff;border-radius:8px;height:10px;overflow:hidden">
             <div id="bar-bia" style="height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb);border-radius:8px;width:0%;transition:width 1s ease"></div>
@@ -383,7 +421,7 @@
         <div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
             <span style="font-size:13px;font-weight:800;color:#db2777">💗 Laura</span>
-            <span id="placar-laura-num" style="font-size:13px;font-weight:900;color:#db2777">0 cookies</span>
+            <span id="placar-laura-num" class="tabular" style="font-size:13px;font-weight:900;color:#db2777">0 cookies</span>
           </div>
           <div style="background:#fdf2f8;border-radius:8px;height:10px;overflow:hidden">
             <div id="bar-laura" style="height:100%;background:linear-gradient(90deg,#f472b6,#db2777);border-radius:8px;width:0%;transition:width 1s ease"></div>
@@ -392,7 +430,7 @@
       </div>
     </div>
 
-    <!-- Queridinho da Semana (col-span-2) -->
+    <!-- ===== QUERIDINHO (col-span-2) ===== -->
     <div id="card-queridinho" class="card col-span-2 gold-pulse" style="padding:16px;background:linear-gradient(135deg,#fffbeb,#fef3c7)">
       <div style="display:flex;align-items:center;gap:10px">
         <span style="font-size:28px">👑</span>
@@ -404,71 +442,84 @@
       </div>
     </div>
 
-    <!-- Detalhamento de Vendas (col-span-2) -->
-    <div class="card col-span-2" style="padding:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <h3 style="font-weight:800;font-size:14px;color:var(--text-main)">📋 Vendas do Dia</h3>
-        <span id="badge-dia-detalhe" style="font-size:11px;font-weight:800;padding:4px 10px;background:var(--tag-bg);color:var(--tag-color);border-radius:8px">Hoje</span>
+    <!-- ===== VENDAS DO DIA (col-span-2) ===== -->
+    <div class="card col-span-2" style="padding:16px;overflow:hidden">
+
+      <div class="vendas-sticky-header">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <h3 style="font-weight:800;font-size:14px;color:var(--text-main)">📋 Vendas do Dia</h3>
+          <span id="badge-dia-detalhe" style="font-size:11px;font-weight:800;padding:4px 10px;background:var(--tag-bg);color:var(--tag-color);border-radius:8px">Hoje</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="filter-pill active" id="filter-todas" onclick="setFilter('todas')">Todas</button>
+          <button class="filter-pill" id="filter-pagas" onclick="setFilter('pagas')">✅ Pagas</button>
+          <button class="filter-pill" id="filter-pendentes" onclick="setFilter('pendentes')">⏳ Pendentes</button>
+        </div>
       </div>
-      <div id="vendas-lista" class="scrollbar-hide" style="max-height:256px;overflow-y:auto;padding-right:2px;display:flex;flex-direction:column;gap:8px">
+
+      <div id="vendas-lista" class="scrollbar-hide" style="max-height:300px;overflow-y:auto;padding-right:2px;display:flex;flex-direction:column;gap:8px">
         <div style="text-align:center;padding:24px;color:#d1d5db;font-size:13px;font-weight:700">Nenhuma venda hoje 🍪</div>
       </div>
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--divider);display:flex;gap:8px">
-        <button onclick="showResumo()" class="btn-tac" style="flex:1;padding:11px;background:var(--active-dark);color:white;border:none;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
-          📊 Ver Resumo
-        </button>
-        <button onclick="showPage('relatorio')" class="btn-tac" style="padding:11px 14px;background:var(--tag-bg);color:var(--tag-color);border:none;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
-          📈 Relatório
-        </button>
+        <button onclick="showResumo()" class="btn-tac" style="flex:1;padding:11px;background:var(--active-dark);color:white;border:none;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">📊 Ver Resumo</button>
+        <button onclick="showPage('relatorio')" class="btn-tac" style="padding:11px 14px;background:var(--tag-bg);color:var(--tag-color);border:none;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">📈 Relatório</button>
       </div>
     </div>
 
-  </div>
+  </div><!-- /page-painel -->
 
-  <!-- PAGE: Calculadora Express -->
+  <!-- ===== PAGE: Calculadora Express ===== -->
   <div id="page-calc" class="hidden" style="display:none">
-    <div class="card" style="padding:16px;margin-bottom:12px">
+    <div class="card" style="padding:16px;margin-bottom:12px;transition:all 0.5s ease-in-out">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:14px">🧮 Calculadora Express</h3>
 
       <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Atalhos de Produtos</div>
-      <div id="calc-atalhos" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-        <!-- Gerado dinamicamente pelo JS -->
-      </div>
+      <div id="calc-atalhos" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
 
       <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Multiplicar quantidade</div>
       <div style="display:flex;gap:6px;margin-bottom:12px">
-        <button onclick="calcMult(2)" class="btn-tac" style="flex:1;padding:10px;background:#f0fdf4;border:none;border-radius:12px;font-size:14px;font-weight:900;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">×2</button>
-        <button onclick="calcMult(3)" class="btn-tac" style="flex:1;padding:10px;background:#f0fdf4;border:none;border-radius:12px;font-size:14px;font-weight:900;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">×3</button>
-        <button onclick="calcMult(5)" class="btn-tac" style="flex:1;padding:10px;background:#f0fdf4;border:none;border-radius:12px;font-size:14px;font-weight:900;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">×5</button>
+        <button onclick="calcMult(2)" class="btn-tac ripple-btn" style="flex:1;padding:10px;background:#f0fdf4;border:none;border-radius:12px;font-size:14px;font-weight:900;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">×2</button>
+        <button onclick="calcMult(3)" class="btn-tac ripple-btn" style="flex:1;padding:10px;background:#f0fdf4;border:none;border-radius:12px;font-size:14px;font-weight:900;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">×3</button>
+        <button onclick="calcMult(5)" class="btn-tac ripple-btn" style="flex:1;padding:10px;background:#f0fdf4;border:none;border-radius:12px;font-size:14px;font-weight:900;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">×5</button>
       </div>
 
       <div style="background:var(--input-bg);border-radius:14px;padding:12px 16px;text-align:center;margin-bottom:12px">
         <div style="font-size:11px;color:var(--text-muted);font-weight:700">Total acumulado</div>
-        <div id="calc-total" style="font-size:28px;font-weight:900;color:var(--text-main)">R$ 0,00</div>
+        <div id="calc-total" class="tabular" style="font-size:28px;font-weight:900;color:var(--text-main)">R$ 0,00</div>
         <div style="display:flex;gap:8px;justify-content:center;margin-top:4px">
           <button onclick="calcReset()" style="font-size:10px;color:var(--text-muted);font-weight:700;background:none;border:none;cursor:pointer">↩ Zerar</button>
-          <button id="btn-enviar-recibo" onclick="enviarRecibo()" style="display:none;font-size:10px;font-weight:800;background:#dcfce7;color:#065f46;border:none;border-radius:8px;padding:4px 10px;cursor:pointer" class="btn-tac pop-in">
-            🧾 Enviar Recibo
-          </button>
+          <button id="btn-enviar-recibo" onclick="enviarRecibo()" style="display:none;font-size:10px;font-weight:800;background:#dcfce7;color:#065f46;border:none;border-radius:8px;padding:4px 10px;cursor:pointer" class="btn-tac pop-in">🧾 Enviar Recibo</button>
         </div>
       </div>
 
-      <!-- Última venda registrada na calc -->
       <div id="ultima-venda-calc" style="display:none;margin-bottom:12px"></div>
 
-      <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Calcular troco</div>
+      <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Forma de Pagamento</div>
       <div style="display:flex;gap:6px;margin-bottom:10px">
-        <button onclick="calcTroco(20)" class="btn-tac" style="flex:1;padding:10px;background:#f5f3ff;border:none;border-radius:12px;font-size:11px;font-weight:800;color:#6d28d9;cursor:pointer;font-family:'Nunito',sans-serif">💵 R$ 20</button>
-        <button onclick="calcTroco(50)" class="btn-tac" style="flex:1;padding:10px;background:#f5f3ff;border:none;border-radius:12px;font-size:11px;font-weight:800;color:#6d28d9;cursor:pointer;font-family:'Nunito',sans-serif">💵 R$ 50</button>
-        <button onclick="calcTroco(100)" class="btn-tac" style="flex:1;padding:10px;background:#f5f3ff;border:none;border-radius:12px;font-size:11px;font-weight:800;color:#6d28d9;cursor:pointer;font-family:'Nunito',sans-serif">💵 R$ 100</button>
+        <button onclick="setPagamento('pix')" id="pag-pix" class="btn-tac ripple-btn" style="flex:1;padding:10px;background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;font-size:12px;font-weight:800;color:#15803d;cursor:pointer;font-family:'Nunito',sans-serif">💚 PIX</button>
+        <button onclick="setPagamento('dinheiro')" id="pag-dinheiro" class="btn-tac ripple-btn" style="flex:1;padding:10px;background:#f5f3ff;border:1.5px solid transparent;border-radius:12px;font-size:12px;font-weight:800;color:#6d28d9;cursor:pointer;font-family:'Nunito',sans-serif">💵 Dinheiro</button>
+        <button onclick="setPagamento('cartao')" id="pag-cartao" class="btn-tac ripple-btn" style="flex:1;padding:10px;background:#eff6ff;border:1.5px solid transparent;border-radius:12px;font-size:12px;font-weight:800;color:#1d4ed8;cursor:pointer;font-family:'Nunito',sans-serif">💳 Cartão</button>
       </div>
+
+      <div id="troco-section" class="troco-field">
+        <div id="notas-rapidas" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+        <div style="display:flex;align-items:center;gap:10px;background:var(--input-bg);border-radius:14px;padding:12px 14px;margin-bottom:8px;border:1.5px solid var(--active-color)">
+          <span style="font-size:22px;font-weight:900;color:var(--text-muted)">R$</span>
+          <input id="troco-input" type="number" inputmode="decimal" placeholder="0,00" step="0.01" oninput="calcTrocoLive()" autofocus style="flex:1;background:transparent;border:none;outline:none;font-size:22px;font-weight:900;color:var(--text-main);font-family:'Nunito',sans-serif;font-variant-numeric:tabular-nums">
+        </div>
+        <div id="troco-live-display" style="display:none;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:14px;padding:14px;text-align:center;margin-bottom:8px;transition:all 0.3s ease">
+          <div style="font-size:11px;color:#065f46;font-weight:700">Troco</div>
+          <div id="troco-live" class="tabular" style="font-size:32px;font-weight:900;color:#047857">R$ 0,00</div>
+        </div>
+      </div>
+
       <div id="calc-troco-display" style="display:none;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:14px;padding:14px;text-align:center">
         <div style="font-size:11px;color:#065f46;font-weight:700">Troco</div>
-        <div id="calc-troco-valor" style="font-size:30px;font-weight:900;color:#047857">R$ 0,00 💵✨</div>
+        <div id="calc-troco-valor" class="tabular" style="font-size:30px;font-weight:900;color:#047857">R$ 0,00 💵✨</div>
       </div>
     </div>
 
-    <!-- Divisão de Lucros -->
+    <!-- DIVISÃO DE LUCROS -->
     <div class="card" style="padding:16px;margin-bottom:12px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:14px">💰 Divisão de Lucros</h3>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
@@ -486,24 +537,22 @@
           <label style="font-size:11px;font-weight:700;color:var(--text-sub);display:block;margin-bottom:4px">% Reinvestimento no caixa</label>
           <input id="lucro-reinvest" type="number" placeholder="20" value="20" min="0" max="100" style="width:100%;padding:10px 12px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:12px;font-size:13px;font-weight:700;outline:none;font-family:'Nunito',sans-serif;color:var(--text-main)">
         </div>
-        <button onclick="calcLucros()" class="btn-tac" style="padding:12px;background:var(--active-dark);color:white;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
-          Calcular Divisão ✨
-        </button>
+        <button onclick="calcLucros()" class="btn-tac" style="padding:12px;background:var(--active-dark);color:white;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">Calcular Divisão ✨</button>
       </div>
-      <div id="lucros-resultado" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+      <div id="lucros-resultado" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
         <div style="background:#eff6ff;border-radius:16px;padding:14px;text-align:center">
-          <div style="font-size:11px;font-weight:800;color:#1d4ed8;margin-bottom:4px">💙 Bia</div>
-          <div id="retirada-bia" style="font-size:18px;font-weight:900;color:#1e40af">R$ 0,00</div>
+          <div style="font-size:11px;font-weight:800;color:#1d4ed8;margin-bottom:4px">💙 Beatriz</div>
+          <div id="retirada-beatriz" class="tabular" style="font-size:18px;font-weight:900;color:#1e40af">R$ 0,00</div>
         </div>
         <div style="background:#fdf2f8;border-radius:16px;padding:14px;text-align:center">
           <div style="font-size:11px;font-weight:800;color:#be185d;margin-bottom:4px">💗 Laura</div>
-          <div id="retirada-laura" style="font-size:18px;font-weight:900;color:#9d174d">R$ 0,00</div>
+          <div id="retirada-laura" class="tabular" style="font-size:18px;font-weight:900;color:#9d174d">R$ 0,00</div>
         </div>
       </div>
     </div>
-  </div>
+  </div><!-- /page-calc -->
 
-  <!-- PAGE: Produtos -->
+  <!-- ===== PAGE: Produtos ===== -->
   <div id="page-produtos" class="hidden" style="display:none">
     <div class="card" style="padding:16px;margin-bottom:12px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:14px">🏷️ Cadastrar Produto</h3>
@@ -530,12 +579,9 @@
           <span style="font-size:12px;font-weight:700;color:var(--text-sub)">Ativo para venda</span>
           <label class="toggle-wrap"><input type="checkbox" id="prod-ativo" checked><div class="toggle-track"></div></label>
         </div>
-        <button onclick="salvarProduto()" class="btn-tac" style="padding:14px;background:var(--active-dark);color:white;border:none;border-radius:16px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
-          ✅ Salvar Produto
-        </button>
+        <button onclick="salvarProduto()" class="btn-tac" style="padding:14px;background:var(--active-dark);color:white;border:none;border-radius:16px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">✅ Salvar Produto</button>
       </div>
     </div>
-
     <div class="card" style="padding:16px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:12px">📦 Cardápio</h3>
       <div id="produtos-lista" style="display:flex;flex-direction:column;gap:8px">
@@ -544,9 +590,8 @@
     </div>
   </div>
 
-  <!-- PAGE: Relatório -->
+  <!-- ===== PAGE: Relatório ===== -->
   <div id="page-relatorio" class="hidden" style="display:none">
-
     <div class="card" style="padding:16px;margin-bottom:12px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <h3 style="font-weight:800;font-size:14px;color:var(--text-main)">📊 Gráficos</h3>
@@ -555,30 +600,23 @@
           <button id="chart-tab-mes" onclick="switchChart('mes')" style="padding:4px 10px;background:none;border:none;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--text-muted)">Mês</button>
         </div>
       </div>
-      <div style="height:160px;position:relative;margin-bottom:20px">
-        <canvas id="lineChart"></canvas>
-      </div>
+      <div style="height:160px;position:relative;margin-bottom:20px"><canvas id="lineChart"></canvas></div>
       <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Por Categoria</div>
-      <div style="height:160px;position:relative;display:flex;justify-content:center">
-        <canvas id="pieChart"></canvas>
-      </div>
+      <div style="height:160px;position:relative;display:flex;justify-content:center"><canvas id="pieChart"></canvas></div>
     </div>
-
     <div class="card" style="padding:16px;margin-bottom:12px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:12px">🏅 Ranking de Cookies</h3>
       <div id="ranking-cookies" style="display:flex;flex-direction:column;gap:8px">
         <div style="text-align:center;padding:16px;color:#d1d5db;font-size:13px">Sem dados ainda</div>
       </div>
     </div>
-
     <div class="card" style="padding:16px;margin-bottom:12px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:12px">💎 Clientes Fiéis</h3>
       <div id="ranking-clientes" style="display:flex;flex-direction:column;gap:8px">
         <div style="text-align:center;padding:16px;color:#d1d5db;font-size:13px">Sem dados ainda</div>
       </div>
     </div>
-
-    <!-- Relatório IA -->
+    <!-- IA Relatório -->
     <div class="card" style="padding:16px;margin-bottom:12px" id="card-relatorio-ia">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <h3 style="font-weight:800;font-size:14px;color:var(--text-main)">🤖 Relatório IA Semanal</h3>
@@ -587,25 +625,16 @@
           <button onclick="apagarRelatorioIA()" id="btn-apagar-ia" style="display:none;width:28px;height:28px;background:#fee2e2;border:none;border-radius:8px;font-size:13px;cursor:pointer;color:#dc2626" title="Apagar relatório">✕</button>
         </div>
       </div>
-
-      <!-- Skeleton loader para IA -->
       <div id="ia-skeleton" style="display:none">
         <div class="skeleton skeleton-line" style="width:90%"></div>
         <div class="skeleton skeleton-line" style="width:75%"></div>
         <div class="skeleton skeleton-line" style="width:85%"></div>
         <div class="skeleton skeleton-line" style="width:70%"></div>
-        <div class="skeleton skeleton-line" style="width:60%"></div>
       </div>
-
       <div id="relatorio-ia-area" class="receipt-area" style="min-height:80px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:11px">
         Clique para gerar o relatório...
       </div>
-
-      <button onclick="gerarRelatorioIA()" class="btn-tac" style="width:100%;margin-top:10px;padding:13px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
-        ✨ Gerar Relatório IA
-      </button>
-
-      <!-- Gaveta Histórico -->
+      <button onclick="gerarRelatorioIA()" class="btn-tac" style="width:100%;margin-top:10px;padding:13px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">✨ Gerar Relatório IA</button>
       <div style="margin-top:10px">
         <button onclick="toggleIADrawer()" style="width:100%;padding:8px;background:var(--tag-bg);border:none;border-radius:10px;font-size:11px;font-weight:800;color:var(--text-sub);cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
           <i class="fa-solid fa-clock-rotate-left" style="font-size:10px"></i>
@@ -619,18 +648,15 @@
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- PAGE: Post-it (Quadro de Avisos) -->
+  <!-- ===== PAGE: Avisos ===== -->
   <div id="page-avisos" class="hidden" style="display:none">
     <div class="card" style="padding:16px;margin-bottom:12px">
       <h3 style="font-weight:800;font-size:14px;color:var(--text-main);margin-bottom:14px">📌 Quadro de Avisos</h3>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
         <input id="aviso-texto" type="text" placeholder="Escreva um recadinho fofo 💕" style="width:100%;padding:11px 14px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:14px;font-size:13px;font-family:'Nunito',sans-serif;outline:none;font-weight:600;color:var(--text-main)">
-        <button onclick="salvarAviso()" class="btn-tac" style="padding:13px;background:var(--active-dark);color:white;border:none;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">
-          📌 Postar Recadinho
-        </button>
+        <button onclick="salvarAviso()" class="btn-tac" style="padding:13px;background:var(--active-dark);color:white;border:none;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">📌 Postar Recadinho</button>
       </div>
       <div id="avisos-lista" style="display:flex;flex-direction:column;gap:10px">
         <div style="text-align:center;padding:20px;color:#d1d5db;font-size:13px">Nenhum recado ainda 🌸</div>
@@ -640,29 +666,14 @@
 
 </div><!-- /app -->
 
-<!-- Bottom Navigation -->
+<!-- Bottom Nav -->
 <div id="nav-bar" class="hidden" style="position:fixed;bottom:0;left:0;right:0;background:var(--nav-bg);backdrop-filter:blur(16px);border-top:1px solid var(--divider);padding:8px 12px 16px;z-index:1000;max-width:480px;margin:0 auto;left:50%;transform:translateX(-50%);width:100%;transition:background 0.3s">
   <div style="display:flex;justify-content:space-around;align-items:center">
-    <button class="nav-btn active" id="nav-painel" onclick="showPage('painel')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif">
-      <span style="font-size:18px">🏠</span>
-      <span style="font-size:10px;font-weight:800">Painel</span>
-    </button>
-    <button class="nav-btn" id="nav-calc" onclick="showPage('calc')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif">
-      <span style="font-size:18px">🧮</span>
-      <span style="font-size:10px;font-weight:800">Calc.</span>
-    </button>
-    <button class="nav-btn" id="nav-produtos" onclick="showPage('produtos')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif">
-      <span style="font-size:18px">📦</span>
-      <span style="font-size:10px;font-weight:800">Produtos</span>
-    </button>
-    <button class="nav-btn" id="nav-relatorio" onclick="showPage('relatorio')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif">
-      <span style="font-size:18px">📊</span>
-      <span style="font-size:10px;font-weight:800">Relatórios</span>
-    </button>
-    <button class="nav-btn" id="nav-avisos" onclick="showPage('avisos')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif">
-      <span style="font-size:18px">📌</span>
-      <span style="font-size:10px;font-weight:800">Avisos</span>
-    </button>
+    <button class="nav-btn active" id="nav-painel" onclick="showPage('painel')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif"><span style="font-size:18px">🏠</span><span style="font-size:10px;font-weight:800">Painel</span></button>
+    <button class="nav-btn" id="nav-calc" onclick="showPage('calc')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif"><span style="font-size:18px">🧮</span><span style="font-size:10px;font-weight:800">Calc.</span></button>
+    <button class="nav-btn" id="nav-produtos" onclick="showPage('produtos')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif"><span style="font-size:18px">📦</span><span style="font-size:10px;font-weight:800">Produtos</span></button>
+    <button class="nav-btn" id="nav-relatorio" onclick="showPage('relatorio')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif"><span style="font-size:18px">📊</span><span style="font-size:10px;font-weight:800">Relatórios</span></button>
+    <button class="nav-btn" id="nav-avisos" onclick="showPage('avisos')" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;cursor:pointer;font-family:'Nunito',sans-serif"><span style="font-size:18px">📌</span><span style="font-size:10px;font-weight:800">Avisos</span></button>
   </div>
 </div>
 
@@ -694,7 +705,9 @@ let isFallback = true;
 let currentAdmin = "bia";
 let selectedDate = getTodayStr();
 let calViewYear = new Date().getFullYear();
-let calViewMonth = new Date().getMonth(); // 0-indexed
+let calViewMonth = new Date().getMonth();
+let currentFilter = 'todas';
+let currentPagamento = 'pix';
 
 let localState = {
   cardapio: [],
@@ -703,13 +716,13 @@ let localState = {
 };
 
 let calcAccumulator = 0;
-let calcItems = []; // [{nome, preco, qtd}]
+let calcItems = [];
 let lastSaleForCalc = null;
+let editingVendaIdx = null;
 
 let lineChartInst = null;
 let pieChartInst = null;
 
-// IA history
 let iaHistory = [];
 let iaCountdownInterval = null;
 let iaAutoHideTimer = null;
@@ -742,6 +755,8 @@ function shortName(nome) {
 }
 
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const WEEKDAY_PT = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const WEEKDAY_CAP = ['Domingos','Segundas','Terças','Quartas','Quintas','Sextas','Sábados'];
 
 // ============================================================
 // DARK MODE
@@ -754,8 +769,6 @@ window.toggleDarkMode = function() {
   localStorage.setItem('lbc_theme', isDark ? 'dark' : 'light');
   const btn = document.getElementById('btn-dark-mode');
   btn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-  // Update splash background
-  document.getElementById('splash').style.background = isDark ? '#1c1917' : '#fdf8f0';
 };
 
 function applyStoredTheme() {
@@ -778,48 +791,69 @@ function playSound(type) {
       const times = [0, 0.1, 0.2];
       const freqs = [880, 1046, 1319];
       times.forEach((t, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
+        const o = ctx.createOscillator(), g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
-        o.type = 'sine';
-        o.frequency.value = freqs[i];
+        o.type = 'sine'; o.frequency.value = freqs[i];
         g.gain.setValueAtTime(0.3, ctx.currentTime + t);
         g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.3);
-        o.start(ctx.currentTime + t);
-        o.stop(ctx.currentTime + t + 0.3);
+        o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.3);
       });
     } else if (type === 'pop') {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
       o.type = 'sine'; o.frequency.value = 600;
       g.gain.setValueAtTime(0.25, ctx.currentTime);
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
       o.start(); o.stop(ctx.currentTime + 0.18);
     } else if (type === 'pending') {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
       o.type = 'triangle'; o.frequency.value = 440;
       g.gain.setValueAtTime(0.2, ctx.currentTime);
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
       o.start(); o.stop(ctx.currentTime + 0.5);
     } else if (type === 'switch') {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
       o.type = 'sine'; o.frequency.value = 660;
       g.gain.setValueAtTime(0.15, ctx.currentTime);
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
       o.start(); o.stop(ctx.currentTime + 0.12);
+    } else if (type === 'delete') {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sawtooth'; o.frequency.value = 220;
+      g.gain.setValueAtTime(0.2, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      o.start(); o.stop(ctx.currentTime + 0.25);
     }
   } catch(e) {}
 }
 
 // ============================================================
+// RIPPLE EFFECT
+// ============================================================
+function addRipple(e, btn) {
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = (e.clientX || rect.left + rect.width/2) - rect.left - size/2;
+  const y = (e.clientY || rect.top + rect.height/2) - rect.top - size/2;
+  const wave = document.createElement('span');
+  wave.className = 'ripple-wave';
+  wave.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+  btn.appendChild(wave);
+  setTimeout(() => wave.remove(), 600);
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.ripple-btn');
+  if (btn) addRipple(e, btn);
+});
+
+// ============================================================
 // TOAST
 // ============================================================
-function showToast(msg, emoji = '✨', type = 'default') {
+function showToast(msg, emoji = '✨') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = 'toast';
@@ -852,7 +886,7 @@ function launchConfetti() {
 }
 
 // ============================================================
-// COUNTUP ANIMATION
+// COUNTER ANIMATION
 // ============================================================
 function animateCounter(el, targetVal, prefix = 'R$ ', suffix = '') {
   if (!el) return;
@@ -864,9 +898,8 @@ function animateCounter(el, targetVal, prefix = 'R$ ', suffix = '') {
     const eased = 1 - Math.pow(1 - progress, 3);
     const current = targetVal * eased;
     el.textContent = prefix + current.toFixed(2).replace('.',',') + suffix;
-    if (progress < 1) {
-      requestAnimationFrame(update);
-    } else {
+    if (progress < 1) requestAnimationFrame(update);
+    else {
       el.textContent = prefix + targetVal.toFixed(2).replace('.',',') + suffix;
       el.classList.add('blink-once');
       setTimeout(() => el.classList.remove('blink-once'), 600);
@@ -876,38 +909,74 @@ function animateCounter(el, targetVal, prefix = 'R$ ', suffix = '') {
 }
 
 // ============================================================
-// CALENDAR
+// AUDITORIA LOG
 // ============================================================
+async function logAuditoria(tipo, vendaId, valor, operador, extra = {}) {
+  if (!isFallback) {
+    try {
+      await addDoc(collection(db, 'logs_auditoria'), {
+        tipo,
+        vendaId,
+        valor,
+        operador,
+        ts: Date.now(),
+        dataHora: new Date().toLocaleString('pt-BR'),
+        ...extra
+      });
+    } catch(e) { console.warn('Auditoria log error:', e); }
+  } else {
+    console.log('[AUDITORIA]', { tipo, vendaId, valor, operador, ts: new Date().toLocaleString('pt-BR'), ...extra });
+  }
+}
+
+// ============================================================
+// CALENDAR PREMIUM
+// ============================================================
+function getDayTotal(dateStr) {
+  const sales = localState.vendas[dateStr] || [];
+  return sales.reduce((s, v) => s + (v.pago ? v.valor_total : 0), 0);
+}
+
 function renderCalendar() {
   const grid = document.getElementById('calendar-grid');
   const title = document.getElementById('cal-title');
   title.textContent = `${MONTHS_PT[calViewMonth]} ${calViewYear}`;
 
   const todayStr = getTodayStr();
-  const firstDay = new Date(calViewYear, calViewMonth, 1).getDay(); // 0=Sun
+  const firstDay = new Date(calViewYear, calViewMonth, 1).getDay();
   const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
   const dayNames = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
   let html = '';
-  // Headers
-  dayNames.forEach(d => {
-    html += `<div class="cal-header">${d}</div>`;
-  });
-  // Empty cells before day 1
-  for (let i = 0; i < firstDay; i++) {
-    html += `<div class="cal-day empty"></div>`;
-  }
-  // Days
+  dayNames.forEach(d => { html += `<div class="cal-header">${d}</div>`; });
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${calViewYear}-${String(calViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday = dateStr === todayStr;
     const isSelected = dateStr === selectedDate;
     const hasSales = (localState.vendas[dateStr] || []).length > 0;
+
+    const prevDate = new Date(calViewYear, calViewMonth, d - 1);
+    const prevStr = `${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}-${String(prevDate.getDate()).padStart(2,'0')}`;
+    const todayTotal = getDayTotal(dateStr);
+    const prevTotal = getDayTotal(prevStr);
+    let arrowHtml = '';
+    if (hasSales && prevTotal > 0) {
+      if (todayTotal > prevTotal) arrowHtml = `<span class="cal-arrow up">▲</span>`;
+      else if (todayTotal < prevTotal) arrowHtml = `<span class="cal-arrow down">▼</span>`;
+    }
+    const dotHtml = hasSales ? `<div class="sales-dot"></div>` : '';
+
     let cls = 'cal-day';
     if (isToday) cls += ' today';
     else if (isSelected) cls += ' selected';
-    if (hasSales) cls += ' has-sales';
-    html += `<div class="${cls}" onclick="selectCalendarDate('${dateStr}')" title="${dateStr}">${d}</div>`;
+
+    html += `<div class="${cls}" onclick="selectCalendarDate('${dateStr}')" title="${dateStr}">
+      <span>${d}</span>
+      ${dotHtml}
+      ${arrowHtml}
+    </div>`;
   }
   grid.innerHTML = html;
 }
@@ -917,13 +986,11 @@ window.calPrev = function() {
   if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
   renderCalendar();
 };
-
 window.calNext = function() {
   calViewMonth++;
   if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
   renderCalendar();
 };
-
 window.selectCalendarDate = function(dateStr) {
   selectedDate = dateStr;
   renderCalendar();
@@ -941,7 +1008,6 @@ function applyTheme(admin) {
   document.getElementById('btn-bia').style.color = isBia ? 'white' : 'var(--text-sub)';
   document.getElementById('btn-laura').style.background = !isBia ? 'var(--laura-dark)' : 'transparent';
   document.getElementById('btn-laura').style.color = !isBia ? 'white' : 'var(--text-sub)';
-
   const body = document.body;
   if (isBia) {
     body.style.setProperty('--active-color', '#60a5fa');
@@ -961,41 +1027,30 @@ window.switchAdmin = async function(admin) {
   playSound('switch');
   showToast(`Perfil de ${admin === 'bia' ? 'Beatriz 💙' : 'Laura 💗'} ativado!`, admin === 'bia' ? '💙' : '💗');
   if (!isFallback) {
-    try {
-      await setDoc(doc(db, 'config', 'global'), { adminAtivo: admin }, { merge: true });
-    } catch(e) { console.error(e); }
+    try { await setDoc(doc(db, 'config', 'global'), { adminAtivo: admin }, { merge: true }); } catch(e) {}
   }
 };
 
 // ============================================================
-// PAGE NAVIGATION
+// PAGE NAV
 // ============================================================
 const pages = ['painel', 'calc', 'produtos', 'relatorio', 'avisos'];
-
 window.showPage = function(page) {
   pages.forEach(p => {
     const el = document.getElementById(`page-${p}`);
     if (el) el.style.display = 'none';
   });
   const target = document.getElementById(`page-${page}`);
-  if (target) target.style.display = 'block';
-
+  if (target) target.style.display = page === 'painel' ? 'grid' : 'block';
   pages.forEach(p => {
     const btn = document.getElementById(`nav-${p}`);
     if (btn) btn.classList.remove('active');
   });
   const activeBtn = document.getElementById(`nav-${page}`);
   if (activeBtn) activeBtn.classList.add('active');
-
   updateNavActiveStyle();
-
-  if (page === 'relatorio') {
-    setTimeout(() => renderCharts(), 100);
-    renderRankings();
-  }
-  if (page === 'calc') {
-    renderCalcAtalhos();
-  }
+  if (page === 'relatorio') { setTimeout(() => renderCharts(), 100); renderRankings(); }
+  if (page === 'calc') renderCalcAtalhos();
 };
 
 function updateNavActiveStyle() {
@@ -1010,17 +1065,29 @@ function updateNavActiveStyle() {
 }
 
 // ============================================================
+// FILTER PILLS
+// ============================================================
+window.setFilter = function(filter) {
+  currentFilter = filter;
+  ['todas','pagas','pendentes'].forEach(f => {
+    const el = document.getElementById(`filter-${f}`);
+    if (el) { el.classList.toggle('active', f === filter); }
+  });
+  renderVendasLista();
+};
+
+// ============================================================
 // FIREBASE INIT
 // ============================================================
 try {
   const app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   isFallback = false;
-  document.getElementById('demo-banner').style.display = 'none';
 } catch(e) {
   isFallback = true;
-  document.getElementById('demo-banner').classList.remove('hidden');
-  document.getElementById('demo-banner').style.display = 'block';
+  const banner = document.getElementById('demo-banner');
+  banner.classList.remove('hidden');
+  banner.style.display = 'block';
 }
 
 // ============================================================
@@ -1031,38 +1098,42 @@ function initListeners() {
     onSnapshot(collection(db, 'cardapio'), snap => {
       localState.cardapio = [];
       snap.forEach(d => localState.cardapio.push({ id: d.id, ...d.data() }));
-      populateDropdown();
-      renderProdutos();
-      renderCalcAtalhos();
+      populateDropdown(); renderProdutos(); renderCalcAtalhos();
     });
-
     onSnapshot(collection(db, 'vendas'), snap => {
-      snap.forEach(d => {
-        localState.vendas[d.id] = d.data().itens || [];
-      });
-      refreshDashboard();
-      renderCalendar();
+      snap.forEach(d => { localState.vendas[d.id] = d.data().itens || []; });
+      refreshDashboard(); renderCalendar();
     });
-
     onSnapshot(query(collection(db, 'avisos'), orderBy('ts', 'desc')), snap => {
       localState.avisos = [];
       snap.forEach(d => localState.avisos.push({ id: d.id, ...d.data() }));
       renderAvisos();
     });
-
     onSnapshot(doc(db, 'config', 'global'), snap => {
-      if (snap.exists() && snap.data().adminAtivo) {
-        applyTheme(snap.data().adminAtivo);
-      }
+      if (snap.exists() && snap.data().adminAtivo) applyTheme(snap.data().adminAtivo);
     });
   } else {
-    populateDropdown();
-    renderProdutos();
-    renderCalcAtalhos();
-    refreshDashboard();
-    renderAvisos();
-    renderCalendar();
+    populateDropdown(); renderProdutos(); renderCalcAtalhos();
+    refreshDashboard(); renderAvisos(); renderCalendar();
   }
+}
+
+// ============================================================
+// MÉDIA DIÁRIA POR DIA DA SEMANA
+// ============================================================
+function calcMediaDiaSemana(dateStr) {
+  const targetDate = new Date(dateStr + 'T00:00:00');
+  const targetWeekday = targetDate.getDay();
+  const entries = [];
+  Object.entries(localState.vendas).forEach(([k, vendas]) => {
+    const d = new Date(k + 'T00:00:00');
+    if (d.getDay() === targetWeekday && k !== dateStr) {
+      const tot = vendas.reduce((s, v) => s + v.valor_total, 0);
+      if (tot > 0) entries.push(tot);
+    }
+  });
+  if (!entries.length) return null;
+  return entries.reduce((s, v) => s + v, 0) / entries.length;
 }
 
 // ============================================================
@@ -1070,50 +1141,77 @@ function initListeners() {
 // ============================================================
 function refreshDashboard() {
   const dateSales = localState.vendas[selectedDate] || [];
-  const mes = selectedDate.slice(0,7);
+  const mes = selectedDate.slice(0, 7);
 
-  const fatDia = dateSales.reduce((s,v) => s + v.valor_total, 0);
+  const fatDia = dateSales.reduce((s, v) => s + v.valor_total, 0);
   const fatMes = Object.keys(localState.vendas)
     .filter(k => k.startsWith(mes))
-    .reduce((s, k) => s + localState.vendas[k].reduce((ss,v) => ss + v.valor_total, 0), 0);
+    .reduce((s, k) => s + localState.vendas[k].reduce((ss, v) => ss + v.valor_total, 0), 0);
 
   animateCounter(document.getElementById('fat-dia'), fatDia);
   animateCounter(document.getElementById('fat-mes'), fatMes);
 
-  const pago = dateSales.filter(v => v.pago).reduce((s,v) => s+v.valor_total, 0);
-  const pendente = dateSales.filter(v => !v.pago).reduce((s,v) => s+v.valor_total, 0);
+  const pago = dateSales.filter(v => v.pago).reduce((s, v) => s + v.valor_total, 0);
+  const pendente = dateSales.filter(v => !v.pago).reduce((s, v) => s + v.valor_total, 0);
   document.getElementById('fat-dia-sub').textContent = `✅ ${formatBRL(pago)} pago  ⏳ ${formatBRL(pendente)} pend.`;
-  document.getElementById('fat-mes-sub').textContent = `${Object.keys(localState.vendas).filter(k=>k.startsWith(mes)).length} dias ativos`;
+  document.getElementById('fat-mes-sub').textContent = `${Object.keys(localState.vendas).filter(k => k.startsWith(mes)).length} dias ativos`;
+
+  const mediaEl = document.getElementById('fat-dia-media');
+  const media = calcMediaDiaSemana(selectedDate);
+  if (media !== null) {
+    const targetDate = new Date(selectedDate + 'T00:00:00');
+    const weekdayName = WEEKDAY_CAP[targetDate.getDay()];
+    const diff = fatDia - media;
+    const diffStr = diff >= 0 ? `+${formatBRL(diff)} acima` : `${formatBRL(Math.abs(diff))} abaixo`;
+    const diffColor = diff >= 0 ? '#10b981' : '#f59e0b';
+    mediaEl.style.display = 'block';
+    mediaEl.innerHTML = `📊 Média de ${weekdayName}: <strong style="color:var(--text-main)">${formatBRL(media)}</strong><br><span style="color:${diffColor};font-weight:800">${diffStr} da média</span>`;
+  } else {
+    mediaEl.style.display = 'none';
+  }
 
   renderVendasLista();
   renderPlacar();
   renderQueridinho();
+  renderCalendar();
 
   const displayDate = selectedDate.split('-').reverse().join('/');
   document.getElementById('badge-data').textContent = displayDate;
   document.getElementById('badge-dia-detalhe').textContent = displayDate;
-
-  renderCalendar();
 }
 
 // ============================================================
-// VENDAS LISTA
+// VENDAS LISTA com filtros, editar, excluir e marcar pago
 // ============================================================
 function renderVendasLista() {
   const lista = document.getElementById('vendas-lista');
   const sales = localState.vendas[selectedDate] || [];
-  if (!sales.length) {
-    lista.innerHTML = '<div style="text-align:center;padding:24px;color:#d1d5db;font-size:13px;font-weight:700">Nenhuma venda neste dia 🍪</div>';
+
+  let filtered = sales;
+  if (currentFilter === 'pagas') filtered = sales.filter(v => v.pago);
+  else if (currentFilter === 'pendentes') filtered = sales.filter(v => !v.pago);
+
+  if (!filtered.length) {
+    lista.innerHTML = `<div style="text-align:center;padding:24px;color:#d1d5db;font-size:13px;font-weight:700">${currentFilter === 'todas' ? 'Nenhuma venda neste dia 🍪' : 'Nenhuma venda neste filtro'}</div>`;
     return;
   }
+
   lista.innerHTML = '';
-  sales.forEach((v, idx) => {
+  filtered.forEach((v, filteredIdx) => {
+    const realIdx = sales.indexOf(v);
+
     const item = document.createElement('div');
-    item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--input-bg);border-radius:14px;border:1px solid var(--input-border)';
+    item.className = 'venda-item';
+    item.dataset.idx = realIdx;
+    item.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;padding:10px 12px;background:var(--input-bg);border-radius:14px;border:1px solid var(--input-border);gap:8px';
 
     const paidBadge = v.pago
-      ? '<span style="font-size:10px;font-weight:800;padding:3px 8px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:6px">✅ PAGO</span>'
-      : '<span style="font-size:10px;font-weight:800;padding:3px 8px;background:#fff1f2;color:#9f1239;border:1px solid #fecdd3;border-radius:6px">⏳ PENDENTE</span>';
+      ? `<span style="font-size:10px;font-weight:800;padding:3px 8px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:6px">✅ PAGO</span>`
+      : `<span style="font-size:10px;font-weight:800;padding:3px 8px;background:#fff1f2;color:#9f1239;border:1px solid #fecdd3;border-radius:6px">⏳ PENDENTE</span>`;
+
+    const markBtn = !v.pago
+      ? `<button onclick="marcarComoPago(${realIdx})" title="Marcar como pago" style="width:24px;height:24px;background:#dcfce7;border:none;border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#065f46;flex-shrink:0">✓</button>`
+      : `<span style="width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;color:#10b981;flex-shrink:0;font-size:14px">✔</span>`;
 
     item.innerHTML = `
       <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
@@ -1123,17 +1221,121 @@ function renderVendasLista() {
           <div style="font-size:11px;color:var(--text-muted);font-weight:600">${v.quantidade}× ${v.nome}</div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:8px">
-        <span style="font-size:13px;font-weight:900;color:var(--text-main)">${formatBRL(v.valor_total)}</span>
-        <div style="display:flex;align-items:center;gap:4px">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span class="tabular" style="font-size:13px;font-weight:900;color:var(--text-main)">${formatBRL(v.valor_total)}</span>
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end">
           ${paidBadge}
-          <button onclick="copyRecibo(${idx})" style="width:24px;height:24px;background:#dcfce7;border:none;border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Copiar recibo">💚</button>
+          ${markBtn}
+          <button onclick="editarVenda(${realIdx})" title="Editar venda" style="width:24px;height:24px;background:#fef3c7;border:none;border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">✏️</button>
+          <button onclick="excluirVenda(${realIdx})" title="Excluir venda" style="width:24px;height:24px;background:#fee2e2;border:none;border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">🗑️</button>
+          <button onclick="copyRecibo(${realIdx})" title="Copiar recibo" style="width:24px;height:24px;background:#dcfce7;border:none;border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">💚</button>
         </div>
       </div>
     `;
     lista.appendChild(item);
   });
 }
+
+// ============================================================
+// MARCAR COMO PAGO
+// ============================================================
+window.marcarComoPago = async function(idx) {
+  const sales = localState.vendas[selectedDate] || [];
+  if (!sales[idx] || sales[idx].pago) return;
+
+  const v = sales[idx];
+  sales[idx] = { ...v, pago: true };
+  localState.vendas[selectedDate] = sales;
+
+  if (!isFallback) {
+    try {
+      await setDoc(doc(db, 'vendas', selectedDate), { itens: sales }, { merge: true });
+    } catch(e) { console.error(e); }
+  }
+
+  await logAuditoria('pagamento', `${selectedDate}_${idx}`, v.valor_total, adminName(), { cliente: v.cliente, produto: v.nome });
+
+  const items = document.querySelectorAll('.venda-item');
+  items.forEach(el => {
+    if (parseInt(el.dataset.idx) === idx) {
+      el.classList.add('paid-flash');
+      setTimeout(() => el.classList.remove('paid-flash'), 900);
+    }
+  });
+
+  playSound('cash');
+  showToast(`Venda de ${v.cliente} marcada como paga! ✅`, '✔');
+  refreshDashboard();
+  const card = document.getElementById('card-fat-dia');
+  card.classList.add('glow-green');
+  setTimeout(() => card.classList.remove('glow-green'), 1000);
+};
+
+// ============================================================
+// EXCLUIR VENDA
+// ============================================================
+window.excluirVenda = async function(idx) {
+  const sales = localState.vendas[selectedDate] || [];
+  if (!sales[idx]) return;
+  const v = sales[idx];
+
+  const result = await Swal.fire({
+    title: '🗑️ Excluir venda?',
+    html: `<div style="font-family:'Nunito',sans-serif">Excluir venda de <strong>${v.cliente}</strong> — <strong>${formatBRL(v.valor_total)}</strong>?<br><small style="color:#9ca3af">Esta ação não pode ser desfeita.</small></div>`,
+    showCancelButton: true,
+    confirmButtonText: '🗑️ Excluir',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#dc2626',
+    customClass: { popup: 'swal2-popup' }
+  });
+
+  if (!result.isConfirmed) return;
+
+  await logAuditoria('exclusao', `${selectedDate}_${idx}`, v.valor_total, adminName(), { cliente: v.cliente, produto: v.nome, data: selectedDate });
+
+  const updatedSales = sales.filter((_, i) => i !== idx);
+  localState.vendas[selectedDate] = updatedSales;
+
+  if (!isFallback) {
+    try {
+      await setDoc(doc(db, 'vendas', selectedDate), { itens: updatedSales }, { merge: true });
+    } catch(e) { console.error(e); }
+  }
+
+  playSound('delete');
+  showToast(`Venda excluída! ${formatBRL(v.valor_total)} removido.`, '🗑️');
+  refreshDashboard();
+};
+
+// ============================================================
+// EDITAR VENDA
+// ============================================================
+window.editarVenda = async function(idx) {
+  const sales = localState.vendas[selectedDate] || [];
+  const v = sales[idx];
+  if (!v) return;
+
+  editingVendaIdx = idx;
+
+  document.getElementById('form-cliente').value = v.cliente;
+  document.getElementById('form-qtd').value = v.quantidade;
+  document.getElementById('form-pago').checked = v.pago;
+
+  const sel = document.getElementById('form-produto');
+  for (let i = 0; i < sel.options.length; i++) {
+    const prod = localState.cardapio.find(p => p.id === sel.options[i].value);
+    if (prod && prod.nome === v.nome) { sel.value = sel.options[i].value; break; }
+  }
+  updateFormPrice();
+
+  const btn = document.getElementById('btn-salvar-venda');
+  btn.textContent = '💾 Atualizar Venda';
+  btn.style.background = '#f59e0b';
+
+  showPage('painel');
+  showToast('Venda carregada para edição! Modifique e salve. ✏️', '✏️');
+  document.getElementById('form-cliente').focus();
+};
 
 // ============================================================
 // SALVAR VENDA
@@ -1151,42 +1353,44 @@ window.salvarVenda = async function() {
   if (!prod) return;
 
   const venda = {
-    cliente,
-    produto_id: prodId,
-    nome: prod.nome,
+    cliente, produto_id: prodId, nome: prod.nome,
     categoria: prod.categoria || 'Tradicionais',
-    quantidade: qtd,
-    valor_total: prod.preco * qtd,
-    pago,
-    admin_responsavel: adminLabel(),
-    ts: Date.now()
+    quantidade: qtd, valor_total: prod.preco * qtd,
+    pago, admin_responsavel: adminLabel(), ts: Date.now()
   };
+
+  let sales = [...(localState.vendas[selectedDate] || [])];
+
+  if (editingVendaIdx !== null) {
+    sales[editingVendaIdx] = venda;
+    editingVendaIdx = null;
+    document.getElementById('btn-salvar-venda').textContent = '☁️ Salvar Venda';
+    document.getElementById('btn-salvar-venda').style.background = 'var(--active-dark)';
+    showToast(`Venda atualizada! ${formatBRL(venda.valor_total)}`, '✅');
+  } else {
+    sales.push(venda);
+    if (pago) {
+      playSound('cash');
+      launchConfetti();
+      const card = document.getElementById('card-fat-dia');
+      card.classList.add('glow-green');
+      setTimeout(() => card.classList.remove('glow-green'), 1000);
+      showToast(`Venda de ${formatBRL(venda.valor_total)} registrada! 🎉`, '🍪');
+    } else {
+      playSound('pending');
+      showToast('Venda pendente salva ⏳', '📋');
+    }
+  }
+
+  localState.vendas[selectedDate] = sales;
 
   if (!isFallback) {
     try {
-      const ref = doc(db, 'vendas', selectedDate);
-      const snap = await getDoc(ref);
-      const arr = snap.exists() ? (snap.data().itens || []) : [];
-      arr.push(venda);
-      await setDoc(ref, { itens: arr }, { merge: true });
+      await setDoc(doc(db, 'vendas', selectedDate), { itens: sales }, { merge: true });
     } catch(e) { console.error(e); showToast('Erro ao salvar.', '⚠️'); return; }
-  } else {
-    if (!localState.vendas[selectedDate]) localState.vendas[selectedDate] = [];
-    localState.vendas[selectedDate].push(venda);
-    refreshDashboard();
   }
 
-  if (pago) {
-    playSound('cash');
-    launchConfetti();
-    const card = document.getElementById('card-fat-dia');
-    card.classList.add('flash-green');
-    setTimeout(() => card.classList.remove('flash-green'), 600);
-    showToast(`Venda de ${formatBRL(venda.valor_total)} registrada! 🎉`, '🍪');
-  } else {
-    playSound('pending');
-    showToast(`Venda pendente salva ⏳`, '📋');
-  }
+  refreshDashboard();
 
   document.getElementById('form-cliente').value = '';
   document.getElementById('form-qtd').value = '1';
@@ -1201,10 +1405,7 @@ function populateDropdown() {
   const sel = document.getElementById('form-produto');
   sel.innerHTML = '';
   const ativos = localState.cardapio.filter(p => p.status !== false);
-  if (!ativos.length) {
-    sel.innerHTML = '<option value="">Nenhum produto</option>';
-    return;
-  }
+  if (!ativos.length) { sel.innerHTML = '<option value="">Nenhum produto</option>'; return; }
   ativos.forEach(p => {
     const opt = document.createElement('option');
     opt.value = p.id;
@@ -1222,28 +1423,24 @@ window.updateFormPrice = function() {
 };
 
 // ============================================================
-// CALCULADORA EXPRESS — ATALHOS DINÂMICOS
+// CALC EXPRESS
 // ============================================================
 function renderCalcAtalhos() {
   const container = document.getElementById('calc-atalhos');
   if (!container) return;
-
   const ativos = localState.cardapio.filter(p => p.status !== false);
   container.innerHTML = '';
-
   if (!ativos.length) {
     container.innerHTML = '<span style="font-size:11px;color:var(--text-muted);font-weight:700">Cadastre produtos para ver atalhos</span>';
     return;
   }
-
   const bgCores = ['#fef3c7','#fce7f3','#eff6ff','#f0fdf4','#f5f3ff','#ecfdf5'];
   const textCores = ['#92400e','#9d174d','#1d4ed8','#15803d','#6d28d9','#065f46'];
-
   ativos.slice(0, 6).forEach((prod, i) => {
     const bgIdx = i % bgCores.length;
     const btn = document.createElement('button');
-    btn.className = 'btn-tac';
-    btn.style.cssText = `flex:1;min-width:80px;padding:10px 6px;background:${bgCores[bgIdx]};border:none;border-radius:12px;font-size:11px;font-weight:800;color:${textCores[bgIdx]};cursor:pointer;font-family:'Nunito',sans-serif`;
+    btn.className = 'btn-tac ripple-btn';
+    btn.style.cssText = `flex:1;min-width:80px;padding:10px 6px;background:${bgCores[bgIdx]};border:none;border-radius:12px;font-size:11px;font-weight:800;color:${textCores[bgIdx]};cursor:pointer;font-family:'Nunito',sans-serif;position:relative;overflow:hidden`;
     btn.innerHTML = `🍪 ${shortName(prod.nome)}<br><span style="font-size:10px;opacity:0.8">${formatBRL(prod.preco)}</span>`;
     btn.onclick = () => calcAddProd(prod);
     container.appendChild(btn);
@@ -1252,13 +1449,12 @@ function renderCalcAtalhos() {
 
 function calcAddProd(prod) {
   calcAccumulator += prod.preco;
-  // Track items for recibo
   const existing = calcItems.find(it => it.nome === prod.nome);
   if (existing) existing.qtd++;
   else calcItems.push({ nome: prod.nome, preco: prod.preco, qtd: 1 });
   document.getElementById('calc-total').textContent = formatBRL(calcAccumulator);
   playSound('switch');
-  document.getElementById('calc-troco-display').style.display = 'none';
+  if (currentPagamento === 'dinheiro') gerarNotasRapidas();
 }
 
 window.calcAdd = function(val) {
@@ -1266,7 +1462,7 @@ window.calcAdd = function(val) {
   calcItems.push({ nome: `Item R$${val}`, preco: val, qtd: 1 });
   document.getElementById('calc-total').textContent = formatBRL(calcAccumulator);
   playSound('switch');
-  document.getElementById('calc-troco-display').style.display = 'none';
+  if (currentPagamento === 'dinheiro') gerarNotasRapidas();
 };
 
 window.calcMult = function(mult) {
@@ -1274,15 +1470,18 @@ window.calcMult = function(mult) {
   calcItems = calcItems.map(it => ({ ...it, qtd: it.qtd * mult }));
   document.getElementById('calc-total').textContent = formatBRL(calcAccumulator);
   playSound('switch');
+  if (currentPagamento === 'dinheiro') gerarNotasRapidas();
 };
 
 window.calcReset = function() {
-  calcAccumulator = 0;
-  calcItems = [];
+  calcAccumulator = 0; calcItems = [];
   document.getElementById('calc-total').textContent = 'R$ 0,00';
   document.getElementById('calc-troco-display').style.display = 'none';
   document.getElementById('btn-enviar-recibo').style.display = 'none';
   document.getElementById('ultima-venda-calc').style.display = 'none';
+  document.getElementById('troco-input').value = '';
+  document.getElementById('troco-live-display').style.display = 'none';
+  document.getElementById('notas-rapidas').innerHTML = '';
 };
 
 window.calcTroco = function(recebido) {
@@ -1291,21 +1490,81 @@ window.calcTroco = function(recebido) {
   const valor = document.getElementById('calc-troco-valor');
   display.style.display = 'block';
   if (troco >= 0) {
-    valor.textContent = `${formatBRL(troco)} 💵✨`;
-    valor.style.color = '#047857';
+    valor.textContent = `${formatBRL(troco)} 💵✨`; valor.style.color = '#047857';
   } else {
-    valor.textContent = `Faltam ${formatBRL(Math.abs(troco))} ⚠️`;
-    valor.style.color = '#dc2626';
+    valor.textContent = `Faltam ${formatBRL(Math.abs(troco))} ⚠️`; valor.style.color = '#dc2626';
   }
 };
 
-// After a sale, show recibo button
+// ============================================================
+// FORMA DE PAGAMENTO + TROCO
+// ============================================================
+window.setPagamento = function(tipo) {
+  currentPagamento = tipo;
+  const pags = ['pix','dinheiro','cartao'];
+  pags.forEach(p => {
+    const btn = document.getElementById(`pag-${p}`);
+    if (btn) btn.style.borderColor = p === tipo ? 'var(--active-dark)' : 'transparent';
+  });
+  const trocoSection = document.getElementById('troco-section');
+  if (tipo === 'dinheiro') {
+    trocoSection.classList.add('open');
+    gerarNotasRapidas();
+    setTimeout(() => { const inp = document.getElementById('troco-input'); if (inp) inp.focus(); }, 300);
+  } else {
+    trocoSection.classList.remove('open');
+  }
+};
+
+function gerarNotasRapidas() {
+  const container = document.getElementById('notas-rapidas');
+  container.innerHTML = '';
+  const total = calcAccumulator;
+  if (total <= 0) return;
+  const notas = [5, 10, 20, 50, 100, 200];
+  const sugestoes = notas.filter(n => n > total).slice(0, 4);
+  if (!sugestoes.length) sugestoes.push(Math.ceil(total / 10) * 10 + 10);
+
+  sugestoes.forEach(nota => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-tac ripple-btn';
+    btn.style.cssText = 'flex:1;min-width:60px;padding:8px 6px;background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:12px;font-size:12px;font-weight:800;color:#6d28d9;cursor:pointer;font-family:\'Nunito\',sans-serif;position:relative;overflow:hidden';
+    btn.textContent = `R$ ${nota}`;
+    btn.onclick = () => {
+      document.getElementById('troco-input').value = nota;
+      calcTrocoLive();
+    };
+    container.appendChild(btn);
+  });
+}
+
+window.calcTrocoLive = function() {
+  const recebido = parseFloat(document.getElementById('troco-input').value) || 0;
+  const display = document.getElementById('troco-live-display');
+  const troco = recebido - calcAccumulator;
+  if (recebido > 0) {
+    display.style.display = 'block';
+    const trocoEl = document.getElementById('troco-live');
+    if (troco >= 0) {
+      trocoEl.textContent = formatBRL(troco);
+      trocoEl.style.color = '#047857';
+      display.style.background = 'linear-gradient(135deg,#ecfdf5,#d1fae5)';
+    } else {
+      trocoEl.textContent = `- ${formatBRL(Math.abs(troco))}`;
+      trocoEl.style.color = '#dc2626';
+      display.style.background = 'linear-gradient(135deg,#fef2f2,#fecaca)';
+    }
+  } else {
+    display.style.display = 'none';
+  }
+};
+
 function mostrarBotaoRecibo(venda) {
   lastSaleForCalc = venda;
   const btn = document.getElementById('btn-enviar-recibo');
   btn.style.display = 'inline-flex';
   btn.classList.remove('pop-in');
-  void btn.offsetWidth; // reflow
+  void btn.offsetWidth;
   btn.classList.add('pop-in');
 }
 
@@ -1315,26 +1574,16 @@ window.enviarRecibo = function() {
   const linhas = calcItems.length
     ? calcItems.map(it => `${it.qtd}x ${it.nome} - ${formatBRL(it.preco)}`).join('\n')
     : `1x ${v.nome} - ${formatBRL(v.valor_total)}`;
-
-  const texto = `🧾 LBCOOKIES\n-------------------------------\n${linhas}\n-------------------------------\nTotal: ${formatBRL(v.valor_total)} (Pago via ${v.pago ? 'Dinheiro/PIX ✅' : 'Pendente ⏳'})\n\nObrigado pela preferência! 🍪💕`;
-
+  const texto = `🧾 LBCOOKIES\n-------------------------------\n${linhas}\n-------------------------------\nTotal: ${formatBRL(v.valor_total)} (${v.pago ? 'Dinheiro/PIX ✅' : 'Pendente ⏳'})\n\nObrigado pela preferência! 🍪💕`;
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(texto).then(() => {
-      showToast('Recibo copiado para área de transferência! 📋', '🧾');
-    }).catch(() => fallbackCopy(texto));
-  } else {
-    fallbackCopy(texto);
-  }
+    navigator.clipboard.writeText(texto).then(() => showToast('Recibo copiado para área de transferência! 📋', '🧾')).catch(() => fallbackCopy(texto));
+  } else { fallbackCopy(texto); }
 };
 
 function fallbackCopy(texto) {
   const ta = document.createElement('textarea');
-  ta.value = texto;
-  ta.style.cssText = 'position:fixed;left:-9999px';
-  document.body.appendChild(ta);
-  ta.select();
-  document.execCommand('copy');
-  document.body.removeChild(ta);
+  ta.value = texto; ta.style.cssText = 'position:fixed;left:-9999px';
+  document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
   showToast('Recibo copiado! Cole no WhatsApp 💚', '📋');
 }
 
@@ -1346,37 +1595,23 @@ window.salvarProduto = async function() {
   const preco = parseFloat(document.getElementById('prod-preco').value) || 0;
   const categoria = document.getElementById('prod-categoria').value;
   const status = document.getElementById('prod-ativo').checked;
-
   if (!nome || preco <= 0) { showToast('Preencha nome e preço!', '⚠️'); return; }
-
   const id = 'prod_' + Date.now();
   const prod = { id, nome, preco, categoria, status };
-
   if (!isFallback) {
-    try {
-      await setDoc(doc(db, 'cardapio', id), { nome, preco, categoria, status });
-    } catch(e) { console.error(e); }
+    try { await setDoc(doc(db, 'cardapio', id), { nome, preco, categoria, status }); } catch(e) {}
   } else {
     localState.cardapio.push(prod);
-    populateDropdown();
-    renderProdutos();
-    renderCalcAtalhos();
+    populateDropdown(); renderProdutos(); renderCalcAtalhos();
   }
-
   showToast(`${nome} adicionado ao cardápio! 🍪`, '✅');
   document.getElementById('prod-nome').value = '';
   document.getElementById('prod-preco').value = '';
 };
 
-// ============================================================
-// RENDER PRODUTOS
-// ============================================================
 function renderProdutos() {
   const lista = document.getElementById('produtos-lista');
-  if (!localState.cardapio.length) {
-    lista.innerHTML = '<div style="text-align:center;padding:20px;color:#d1d5db;font-size:13px">Nenhum produto</div>';
-    return;
-  }
+  if (!localState.cardapio.length) { lista.innerHTML = '<div style="text-align:center;padding:20px;color:#d1d5db;font-size:13px">Nenhum produto</div>'; return; }
   lista.innerHTML = '';
   localState.cardapio.forEach(p => {
     const item = document.createElement('div');
@@ -1396,9 +1631,7 @@ function renderProdutos() {
 // PLACAR
 // ============================================================
 function renderPlacar() {
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   let qBia = 0, qLaura = 0;
   Object.entries(localState.vendas).forEach(([date, vendas]) => {
     const d = new Date(date + 'T00:00:00');
@@ -1409,10 +1642,8 @@ function renderPlacar() {
       });
     }
   });
-
   document.getElementById('placar-bia-num').textContent = `${qBia} cookies`;
   document.getElementById('placar-laura-num').textContent = `${qLaura} cookies`;
-
   const max = Math.max(qBia, qLaura, 1);
   setTimeout(() => {
     document.getElementById('bar-bia').style.width = `${(qBia/max)*100}%`;
@@ -1420,20 +1651,12 @@ function renderPlacar() {
   }, 300);
 }
 
-// ============================================================
-// QUERIDINHO
-// ============================================================
 function renderQueridinho() {
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const contagem = {};
   Object.entries(localState.vendas).forEach(([date, vendas]) => {
     const d = new Date(date + 'T00:00:00');
-    if (d >= sevenDaysAgo) {
-      vendas.forEach(v => {
-        contagem[v.nome] = (contagem[v.nome] || 0) + v.quantidade;
-      });
-    }
+    if (d >= sevenDaysAgo) vendas.forEach(v => { contagem[v.nome] = (contagem[v.nome] || 0) + v.quantidade; });
   });
   const sorted = Object.entries(contagem).sort((a,b) => b[1]-a[1]);
   if (sorted.length) {
@@ -1443,74 +1666,12 @@ function renderQueridinho() {
 }
 
 // ============================================================
-// RANKINGS
-// ============================================================
-function renderRankings() {
-  const contCookies = {};
-  const contClientes = {};
-  Object.values(localState.vendas).flat().forEach(v => {
-    contCookies[v.nome] = (contCookies[v.nome] || 0) + v.quantidade;
-    contClientes[v.cliente] = (contClientes[v.cliente] || 0) + v.valor_total;
-  });
-
-  const medals = ['🥇','🥈','🥉'];
-  const sortedC = Object.entries(contCookies).sort((a,b)=>b[1]-a[1]);
-  const sortedCl = Object.entries(contClientes).sort((a,b)=>b[1]-a[1]);
-
-  const elCookies = document.getElementById('ranking-cookies');
-  const elClientes = document.getElementById('ranking-clientes');
-
-  if (!sortedC.length) { elCookies.innerHTML = '<div style="text-align:center;padding:16px;color:#d1d5db;font-size:13px">Sem dados ainda</div>'; }
-  else {
-    elCookies.innerHTML = '';
-    const max = sortedC[0][1];
-    sortedC.slice(0,5).forEach(([nome,qtd],i) => {
-      const item = document.createElement('div');
-      item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0';
-      item.innerHTML = `
-        <span style="font-size:18px;width:24px;text-align:center">${medals[i] || `#${i+1}`}</span>
-        <div style="flex:1">
-          <div style="font-size:12px;font-weight:800;color:var(--text-main);margin-bottom:3px">${nome}</div>
-          <div style="background:var(--tag-bg);border-radius:6px;height:6px;overflow:hidden">
-            <div style="height:100%;background:linear-gradient(90deg,var(--active-color),var(--active-dark));border-radius:6px;width:0%;transition:width 1s ease" data-target="${(qtd/max)*100}"></div>
-          </div>
-        </div>
-        <span style="font-size:12px;font-weight:900;color:var(--text-sub)">${qtd}un</span>
-      `;
-      elCookies.appendChild(item);
-      setTimeout(() => {
-        const bar = item.querySelector('[data-target]');
-        if (bar) bar.style.width = bar.dataset.target + '%';
-      }, 300);
-    });
-  }
-
-  if (!sortedCl.length) { elClientes.innerHTML = '<div style="text-align:center;padding:16px;color:#d1d5db;font-size:13px">Sem dados ainda</div>'; }
-  else {
-    elClientes.innerHTML = '';
-    sortedCl.slice(0,5).forEach(([nome,total],i) => {
-      const item = document.createElement('div');
-      item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--input-bg);border-radius:12px';
-      item.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:16px">${medals[i] || `#${i+1}`}</span>
-          <span style="font-size:13px;font-weight:800;color:var(--text-main)">${nome}</span>
-        </div>
-        <span style="font-size:13px;font-weight:900;color:var(--active-dark)">${formatBRL(total)}</span>
-      `;
-      elClientes.appendChild(item);
-    });
-  }
-}
-
-// ============================================================
-// RECIBO WHATSAPP (Vendas do Dia)
+// RECIBO
 // ============================================================
 window.copyRecibo = function(idx) {
   const v = (localState.vendas[selectedDate] || [])[idx];
   if (!v) return;
   const texto = `🧾 LBCOOKIES\n-------------------------------\n${v.quantidade}x ${v.nome} - ${formatBRL(v.valor_total)}\n-------------------------------\nTotal: ${formatBRL(v.valor_total)} (${v.pago ? 'Pago ✅' : 'Pendente ⏳'})\n\nObrigado pela preferência! 🍪💕`;
-
   Swal.fire({
     title: '💚 Recibo para WhatsApp',
     html: `<textarea id="recibo-txt" style="width:100%;min-height:160px;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;font-size:12px;font-family:'Nunito',sans-serif;font-weight:600;resize:none;color:#374151;outline:none">${texto}</textarea>`,
@@ -1519,15 +1680,8 @@ window.copyRecibo = function(idx) {
     cancelButtonText: 'Fechar',
     confirmButtonColor: '#10b981',
     customClass: { popup: 'swal2-popup' },
-    preConfirm: () => {
-      const el = document.getElementById('recibo-txt');
-      el.select();
-      document.execCommand('copy');
-      return true;
-    }
-  }).then(r => {
-    if (r.isConfirmed) showToast('Recibo copiado! Cole no WhatsApp 💚', '📋');
-  });
+    preConfirm: () => { const el = document.getElementById('recibo-txt'); el.select(); document.execCommand('copy'); return true; }
+  }).then(r => { if (r.isConfirmed) showToast('Recibo copiado! Cole no WhatsApp 💚', '📋'); });
 };
 
 // ============================================================
@@ -1535,13 +1689,12 @@ window.copyRecibo = function(idx) {
 // ============================================================
 window.showResumo = function() {
   const sales = localState.vendas[selectedDate] || [];
-  const total = sales.reduce((s,v) => s+v.valor_total, 0);
+  const total = sales.reduce((s,v)=>s+v.valor_total,0);
   const pago = sales.filter(v=>v.pago).reduce((s,v)=>s+v.valor_total,0);
   const pend = total - pago;
   const qtd = sales.reduce((s,v)=>s+v.quantidade,0);
-
   Swal.fire({
-    title: `📊 Resumo do Dia`,
+    title: '📊 Resumo do Dia',
     html: `<div style="font-family:'Nunito',sans-serif;text-align:left">
       <div style="padding:8px 0;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between"><span style="color:#6b7280;font-weight:700">Faturamento Bruto</span><strong>${formatBRL(total)}</strong></div>
       <div style="padding:8px 0;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between"><span style="color:#059669;font-weight:700">✅ Pago</span><strong style="color:#059669">${formatBRL(pago)}</strong></div>
@@ -1565,54 +1718,94 @@ window.calcLucros = function() {
   const caixa = liquido * (reinvest / 100);
   const disponivel = liquido - caixa;
   const cada = disponivel / 2;
-
-  document.getElementById('retirada-bia').textContent = formatBRL(cada);
+  document.getElementById('retirada-beatriz').textContent = formatBRL(cada);
   document.getElementById('retirada-laura').textContent = formatBRL(cada);
   document.getElementById('lucros-resultado').style.display = 'grid';
   showToast(`Divisão calculada! Cada uma: ${formatBRL(cada)} 💰`, '✨');
 };
 
 // ============================================================
-// AVISOS (POST-IT)
+// RANKINGS
+// ============================================================
+function renderRankings() {
+  const contCookies = {}, contClientes = {};
+  Object.values(localState.vendas).flat().forEach(v => {
+    contCookies[v.nome] = (contCookies[v.nome] || 0) + v.quantidade;
+    contClientes[v.cliente] = (contClientes[v.cliente] || 0) + v.valor_total;
+  });
+  const medals = ['🥇','🥈','🥉'];
+  const sortedC = Object.entries(contCookies).sort((a,b)=>b[1]-a[1]);
+  const sortedCl = Object.entries(contClientes).sort((a,b)=>b[1]-a[1]);
+  const elCookies = document.getElementById('ranking-cookies');
+  const elClientes = document.getElementById('ranking-clientes');
+
+  if (!sortedC.length) { elCookies.innerHTML = '<div style="text-align:center;padding:16px;color:#d1d5db;font-size:13px">Sem dados ainda</div>'; }
+  else {
+    elCookies.innerHTML = '';
+    const max = sortedC[0][1];
+    sortedC.slice(0,5).forEach(([nome,qtd],i) => {
+      const item = document.createElement('div');
+      item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0';
+      item.innerHTML = `
+        <span style="font-size:18px;width:24px;text-align:center">${medals[i] || `#${i+1}`}</span>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:800;color:var(--text-main);margin-bottom:3px">${nome}</div>
+          <div style="background:var(--tag-bg);border-radius:6px;height:6px;overflow:hidden">
+            <div style="height:100%;background:linear-gradient(90deg,var(--active-color),var(--active-dark));border-radius:6px;width:0%;transition:width 1s ease" data-target="${(qtd/max)*100}"></div>
+          </div>
+        </div>
+        <span style="font-size:12px;font-weight:900;color:var(--text-sub)">${qtd}un</span>
+      `;
+      elCookies.appendChild(item);
+      setTimeout(() => { const bar = item.querySelector('[data-target]'); if (bar) bar.style.width = bar.dataset.target + '%'; }, 300);
+    });
+  }
+
+  if (!sortedCl.length) { elClientes.innerHTML = '<div style="text-align:center;padding:16px;color:#d1d5db;font-size:13px">Sem dados ainda</div>'; }
+  else {
+    elClientes.innerHTML = '';
+    sortedCl.slice(0,5).forEach(([nome,total],i) => {
+      const item = document.createElement('div');
+      item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--input-bg);border-radius:12px';
+      item.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">${medals[i] || `#${i+1}`}</span>
+          <span style="font-size:13px;font-weight:800;color:var(--text-main)">${nome}</span>
+        </div>
+        <span class="tabular" style="font-size:13px;font-weight:900;color:var(--active-dark)">${formatBRL(total)}</span>
+      `;
+      elClientes.appendChild(item);
+    });
+  }
+}
+
+// ============================================================
+// AVISOS
 // ============================================================
 window.salvarAviso = async function() {
   const texto = document.getElementById('aviso-texto').value.trim();
   if (!texto) { showToast('Escreva um recadinho primeiro! 💕', '⚠️'); return; }
-
   const aviso = { texto, admin: adminName(), ts: Date.now() };
-
   if (!isFallback) {
-    try {
-      await addDoc(collection(db, 'avisos'), aviso);
-    } catch(e) { console.error(e); }
+    try { await addDoc(collection(db, 'avisos'), aviso); } catch(e) {}
   } else {
     localState.avisos.unshift({ ...aviso, id: 'a_'+Date.now() });
     renderAvisos();
   }
-
   document.getElementById('aviso-texto').value = '';
   showToast('Recadinho postado! 📌', '💕');
 };
 
 window.deletarAviso = async function(id) {
   playSound('pop');
-  if (!isFallback) {
-    try {
-      await deleteDoc(doc(db, 'avisos', id));
-    } catch(e) { console.error(e); }
-  } else {
-    localState.avisos = localState.avisos.filter(a => a.id !== id);
-    renderAvisos();
-  }
+  if (!isFallback) { try { await deleteDoc(doc(db, 'avisos', id)); } catch(e) {} }
+  else { localState.avisos = localState.avisos.filter(a => a.id !== id); renderAvisos(); }
   showToast('Recadinho apagado 🗑️', '✅');
 };
 
 function renderAvisos() {
   const lista = document.getElementById('avisos-lista');
-  if (!localState.avisos.length) {
-    lista.innerHTML = '<div style="text-align:center;padding:20px;color:#d1d5db;font-size:13px">Nenhum recado ainda 🌸</div>';
-    return;
-  }
+  if (!localState.avisos.length) { lista.innerHTML = '<div style="text-align:center;padding:20px;color:#d1d5db;font-size:13px">Nenhum recado ainda 🌸</div>'; return; }
   lista.innerHTML = '';
   const cores = ['#fef08a','#fde68a','#fbcfe8','#bfdbfe','#bbf7d0'];
   localState.avisos.forEach((a, i) => {
@@ -1632,18 +1825,15 @@ function renderAvisos() {
 }
 
 // ============================================================
-// RELATÓRIO IA — COM GAVETA, AUTO-HIDE E INSIGHTS DE ESTOQUE
+// RELATÓRIO IA
 // ============================================================
 window.gerarRelatorioIA = function() {
   const area = document.getElementById('relatorio-ia-area');
   const skeleton = document.getElementById('ia-skeleton');
   const btnApagar = document.getElementById('btn-apagar-ia');
 
-  // Mostrar skeleton
   area.style.display = 'none';
   skeleton.style.display = 'block';
-
-  // Cancelar timers anteriores
   if (iaCountdownInterval) clearInterval(iaCountdownInterval);
   if (iaAutoHideTimer) clearTimeout(iaAutoHideTimer);
 
@@ -1656,57 +1846,28 @@ window.gerarRelatorioIA = function() {
     const qtd = allSales.length;
     const ticket = qtd ? total/qtd : 0;
 
-    // Análise de estoque
     const contProd = {};
-    const contProdWeek = {};
-    const contProdPrevWeek = {};
-    const today = new Date();
-    const sevenDaysAgo = new Date(today); sevenDaysAgo.setDate(today.getDate()-7);
-    const fourteenDaysAgo = new Date(today); fourteenDaysAgo.setDate(today.getDate()-14);
-
     allSales.forEach(v => {
       if (!contProd[v.nome]) contProd[v.nome] = { qtd: 0, total: 0, preco: v.valor_total/v.quantidade };
       contProd[v.nome].qtd += v.quantidade;
       contProd[v.nome].total += v.valor_total;
     });
 
-    Object.entries(localState.vendas).forEach(([date, vendas]) => {
-      const d = new Date(date + 'T00:00:00');
-      vendas.forEach(v => {
-        if (d >= sevenDaysAgo) { contProdWeek[v.nome] = (contProdWeek[v.nome]||0) + v.quantidade; }
-        else if (d >= fourteenDaysAgo) { contProdPrevWeek[v.nome] = (contProdPrevWeek[v.nome]||0) + v.quantidade; }
-      });
-    });
-
-    // Encontrar produto com maior crescimento
-    let stockInsight = '';
-    let maxGrowth = 0;
-    let maxGrowthProd = null;
-    Object.entries(contProdWeek).forEach(([nome, qtdSem]) => {
-      const prev = contProdPrevWeek[nome] || 1;
-      const growth = ((qtdSem - prev) / prev) * 100;
-      if (growth > maxGrowth) { maxGrowth = growth; maxGrowthProd = nome; }
-    });
-    if (maxGrowthProd && maxGrowth >= 20) {
-      stockInsight = `\n⚠️ AVISO DE ESTOQUE: "${maxGrowthProd}" vendeu ${Math.round(maxGrowth)}% a mais esta semana!\n   Sugerimos reforçar o estoque para a próxima semana! 📦`;
-    }
-
     const pagoTotal = allSales.filter(v=>v.pago).reduce((s,v)=>s+v.valor_total,0);
     const pendTotal = allSales.filter(v=>!v.pago).reduce((s,v)=>s+v.valor_total,0);
     const pagoP = total ? ((pagoTotal/total)*100).toFixed(0) : 0;
     const pendP = total ? ((pendTotal/total)*100).toFixed(0) : 0;
 
-    const d = new Date();
-    const d7 = new Date(); d7.setDate(d7.getDate()-7);
+    const d = new Date(), d7 = new Date();
+    d7.setDate(d7.getDate()-7);
     const fmt = dd => `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;
-
     const insight = total === 0 ? 'Ainda sem vendas. Hora de começar a doçura! 🍪' :
       ticket > 20 ? 'Ticket médio excelente! Clientes investindo em combos 💪' :
       'Foque em combos e pacotes para aumentar o ticket médio! 🚀';
 
     let prodRows = '';
-    Object.entries(contProd).sort((a,b)=>b[1].qtd-a[1].qtd).forEach(([nome, d]) => {
-      prodRows += `${nome.slice(0,20).padEnd(20,' ')} | ${String(d.qtd).padStart(3,' ')} | ${formatBRL(d.preco).padStart(8,' ')} | ${formatBRL(d.total).padStart(9,' ')}\n`;
+    Object.entries(contProd).sort((a,b)=>b[1].qtd-a[1].qtd).forEach(([nome, dt]) => {
+      prodRows += `${nome.slice(0,20).padEnd(20,' ')} | ${String(dt.qtd).padStart(3,' ')} | ${formatBRL(dt.preco).padStart(8,' ')} | ${formatBRL(dt.total).padStart(9,' ')}\n`;
     });
     if (!prodRows) prodRows = 'Sem vendas registradas\n';
 
@@ -1729,66 +1890,47 @@ ${prodRows}-----------------------------------------------------
 • Pago: ....................... ${formatBRL(pagoTotal)} (${pagoP}%)
 • Pendente: ................... ${formatBRL(pendTotal)} (${pendP}%) ⚠️
 -----------------------------------------------------
-💡 INSIGHT DA IA: "${insight}"${stockInsight}
+💡 INSIGHT: "${insight}"
 =====================================================
 Gerado em: ${new Date().toLocaleString('pt-BR')}`;
 
-    // Salvar no histórico
     iaHistory.unshift({ texto: relatorio, geradoEm: new Date().toLocaleString('pt-BR') });
     renderIAHistory();
 
-    // Typing effect
-    area.textContent = '';
-    area.style.display = 'block';
+    area.textContent = ''; area.style.display = 'block';
     let i = 0;
     const interval = setInterval(() => {
-      area.textContent += relatorio[i];
-      i++;
+      area.textContent += relatorio[i]; i++;
       if (i >= relatorio.length) {
         clearInterval(interval);
         showToast('Relatório gerado! ✨', '📊');
         btnApagar.style.display = 'flex';
-
-        // Iniciar countdown de 4 minutos
         let remaining = 240;
         const countdownEl = document.getElementById('ia-countdown');
         countdownEl.style.display = 'inline-block';
-        countdownEl.textContent = `⏱ ${remaining}s`;
         iaCountdownInterval = setInterval(() => {
           remaining--;
-          const mins = Math.floor(remaining / 60);
-          const secs = remaining % 60;
+          const mins = Math.floor(remaining/60), secs = remaining%60;
           countdownEl.textContent = `⏱ ${mins}:${String(secs).padStart(2,'0')}`;
-          if (remaining <= 0) {
-            clearInterval(iaCountdownInterval);
-          }
+          if (remaining <= 0) clearInterval(iaCountdownInterval);
         }, 1000);
-
-        // Auto-hide após 4 minutos
-        iaAutoHideTimer = setTimeout(() => {
-          fadeOutRelatorioIA();
-        }, 240000);
+        iaAutoHideTimer = setTimeout(() => fadeOutRelatorioIA(), 240000);
       }
     }, 8);
-  }, 1200); // simulate loading
+  }, 1200);
 };
 
 function fadeOutRelatorioIA() {
   const area = document.getElementById('relatorio-ia-area');
   const btnApagar = document.getElementById('btn-apagar-ia');
   const countdown = document.getElementById('ia-countdown');
-  area.style.transition = 'opacity 1.2s ease';
-  area.style.opacity = '0';
+  area.style.transition = 'opacity 1.2s ease'; area.style.opacity = '0';
   setTimeout(() => {
-    area.style.opacity = '1';
-    area.style.transition = '';
-    area.style.display = 'flex';
-    area.style.alignItems = 'center';
-    area.style.justifyContent = 'center';
-    area.style.color = '#d1d5db';
-    area.textContent = 'Relatório expirado. Gere um novo ou veja o histórico abaixo.';
-    btnApagar.style.display = 'none';
-    countdown.style.display = 'none';
+    area.style.opacity='1'; area.style.transition='';
+    area.style.display='flex'; area.style.alignItems='center';
+    area.style.justifyContent='center'; area.style.color='#d1d5db';
+    area.textContent='Relatório expirado. Gere um novo ou veja o histórico abaixo.';
+    btnApagar.style.display='none'; countdown.style.display='none';
     if (iaCountdownInterval) clearInterval(iaCountdownInterval);
   }, 1200);
 }
@@ -1798,54 +1940,30 @@ window.apagarRelatorioIA = function() {
   if (iaCountdownInterval) clearInterval(iaCountdownInterval);
   if (iaAutoHideTimer) clearTimeout(iaAutoHideTimer);
   const area = document.getElementById('relatorio-ia-area');
-  const btnApagar = document.getElementById('btn-apagar-ia');
-  const countdown = document.getElementById('ia-countdown');
-  area.style.display = 'flex';
-  area.style.alignItems = 'center';
-  area.style.justifyContent = 'center';
-  area.style.color = '#d1d5db';
-  area.textContent = 'Relatório apagado. Gere um novo quando quiser.';
-  btnApagar.style.display = 'none';
-  countdown.style.display = 'none';
+  area.style.display='flex'; area.style.alignItems='center'; area.style.justifyContent='center'; area.style.color='#d1d5db';
+  area.textContent='Relatório apagado. Gere um novo quando quiser.';
+  document.getElementById('btn-apagar-ia').style.display='none';
+  document.getElementById('ia-countdown').style.display='none';
   showToast('Relatório apagado 🗑️', '✅');
 };
 
-window.toggleIADrawer = function() {
-  const drawer = document.getElementById('ia-drawer');
-  drawer.classList.toggle('open');
-};
+window.toggleIADrawer = function() { document.getElementById('ia-drawer').classList.toggle('open'); };
 
 function renderIAHistory() {
   const lista = document.getElementById('ia-history-list');
   const badge = document.getElementById('ia-drawer-badge');
   badge.textContent = iaHistory.length;
-  if (!iaHistory.length) {
-    lista.innerHTML = '<div style="text-align:center;padding:12px;color:#d1d5db;font-size:12px">Nenhum relatório anterior</div>';
-    return;
-  }
+  if (!iaHistory.length) { lista.innerHTML = '<div style="text-align:center;padding:12px;color:#d1d5db;font-size:12px">Nenhum relatório anterior</div>'; return; }
   lista.innerHTML = '';
   iaHistory.forEach((r, i) => {
     const item = document.createElement('div');
     item.style.cssText = 'background:var(--input-bg);border-radius:12px;overflow:hidden;border:1px solid var(--input-border)';
-    item.innerHTML = `
-      <button onclick="this.nextElementSibling.classList.toggle('open')" style="width:100%;padding:10px 12px;background:none;border:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'Nunito',sans-serif">
-        <span style="font-size:12px;font-weight:800;color:var(--text-main)">📋 Relatório #${iaHistory.length - i} — ${r.geradoEm}</span>
-        <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--text-muted)"></i>
-      </button>
-      <div class="" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease" id="ia-hist-${i}">
-        <pre class="receipt-area" style="margin:0 8px 8px;border-radius:8px;font-size:10px;white-space:pre-wrap">${r.texto}</pre>
-      </div>
-    `;
-    // Use onclick to toggle
-    const btn = item.querySelector('button');
-    const content = item.querySelector('[id^="ia-hist-"]');
-    btn.onclick = () => {
-      if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
-        content.style.maxHeight = '400px';
-      } else {
-        content.style.maxHeight = '0px';
-      }
-    };
+    const content = document.createElement('div');
+    content.style.cssText = 'max-height:0;overflow:hidden;transition:max-height 0.3s ease';
+    item.innerHTML = `<button style="width:100%;padding:10px 12px;background:none;border:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'Nunito',sans-serif"><span style="font-size:12px;font-weight:800;color:var(--text-main)">📋 Relatório #${iaHistory.length-i} — ${r.geradoEm}</span><i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--text-muted)"></i></button>`;
+    content.innerHTML = `<pre class="receipt-area" style="margin:0 8px 8px;border-radius:8px;font-size:10px;white-space:pre-wrap">${r.texto}</pre>`;
+    item.appendChild(content);
+    item.querySelector('button').onclick = () => { content.style.maxHeight = content.style.maxHeight === '0px' || !content.style.maxHeight ? '400px' : '0px'; };
     lista.appendChild(item);
   });
 }
@@ -1856,13 +1974,8 @@ function renderIAHistory() {
 window.switchChart = function(mode) {
   ['semana','mes'].forEach(m => {
     const btn = document.getElementById(`chart-tab-${m}`);
-    if (m === mode) {
-      btn.style.background = 'var(--card-bg)'; btn.style.color = 'var(--text-main)';
-      btn.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-    } else {
-      btn.style.background = 'none'; btn.style.color = 'var(--text-muted)';
-      btn.style.boxShadow = 'none';
-    }
+    if (m === mode) { btn.style.background='var(--card-bg)'; btn.style.color='var(--text-main)'; btn.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)'; }
+    else { btn.style.background='none'; btn.style.color='var(--text-muted)'; btn.style.boxShadow='none'; }
   });
   renderCharts(mode);
 };
@@ -1870,65 +1983,42 @@ window.switchChart = function(mode) {
 function renderCharts(mode = 'semana') {
   if (lineChartInst) { lineChartInst.destroy(); lineChartInst = null; }
   if (pieChartInst) { pieChartInst.destroy(); pieChartInst = null; }
-
   const activeColor = currentAdmin === 'bia' ? '#2563eb' : '#db2777';
   const activeBg = currentAdmin === 'bia' ? '#dbeafe44' : '#fce7f344';
-
   const ctxL = document.getElementById('lineChart');
   const ctxP = document.getElementById('pieChart');
   if (!ctxL || !ctxP) return;
-
   const labels = [], data = [];
-  for (let i = 6; i >= 0; i--) {
+  const days = mode === 'mes' ? 30 : 7;
+  for (let i = days - 1; i >= 0; i--) {
     const d = new Date(); d.setDate(d.getDate()-i);
     const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     labels.push(`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`);
     data.push((localState.vendas[key] || []).reduce((s,v)=>s+v.valor_total,0));
   }
-
   lineChartInst = new Chart(ctxL, {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{ label: 'Vendas (R$)', data, borderColor: activeColor, backgroundColor: activeBg, fill: true, tension: 0.4, pointBackgroundColor: activeColor, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { display: false, beginAtZero: true },
-        x: { grid: { display: false }, ticks: { font: { family: 'Nunito', size: 10, weight: '700' }, color: '#9ca3af' } }
-      }
-    }
+    data: { labels, datasets: [{ label: 'Vendas (R$)', data, borderColor: activeColor, backgroundColor: activeBg, fill: true, tension: 0.4, pointBackgroundColor: activeColor, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false, beginAtZero: true }, x: { grid: { display: false }, ticks: { font: { family: 'Nunito', size: 10, weight: '700' }, color: '#9ca3af', maxTicksLimit: 7 } } } }
   });
-
   const cats = {};
-  Object.values(localState.vendas).flat().forEach(v => {
-    cats[v.categoria] = (cats[v.categoria] || 0) + v.valor_total;
-  });
-  const catLabels = Object.keys(cats);
-  const catData = Object.values(cats);
+  Object.values(localState.vendas).flat().forEach(v => { cats[v.categoria] = (cats[v.categoria] || 0) + v.valor_total; });
+  const catLabels = Object.keys(cats), catData = Object.values(cats);
   if (!catData.length) { catLabels.push('Sem dados'); catData.push(1); }
-
   pieChartInst = new Chart(ctxP, {
     type: 'doughnut',
-    data: {
-      labels: catLabels,
-      datasets: [{ data: catData, backgroundColor: ['#f59e0b','#10b981','#3b82f6','#f472b6','#8b5cf6'], borderWidth: 2, borderColor: 'transparent' }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: 'Nunito', size: 10, weight: '700' }, color: '#374151' } } }
-    }
+    data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: ['#f59e0b','#10b981','#3b82f6','#f472b6','#8b5cf6'], borderWidth: 2, borderColor: 'transparent' }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: 'Nunito', size: 10, weight: '700' }, color: '#374151' } } } }
   });
 }
 
 // ============================================================
-// BOOT SEQUENCE
+// BOOT
 // ============================================================
 window.addEventListener('DOMContentLoaded', () => {
   applyStoredTheme();
   applyTheme('bia');
+  setTimeout(() => setPagamento('pix'), 100);
 
   setTimeout(() => {
     const splash = document.getElementById('splash');
